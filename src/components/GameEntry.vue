@@ -1,24 +1,34 @@
 <template>
-  <section>
-    HELLO
-    <div v-if="createNewGame">
-      New Game
-    </div>
-    <div class="mb-5" v-else>
-        <label
-          for="name"
-          class="mb-3 block text-base font-medium text-[#07074D]"
-        >
-          Full Name
-        </label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          placeholder="Full Name"
-          class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-        />
+  <section class="card w-96 bg-base-100 shadow-xl">
+    <div class="card-body">
+      <div class="flex flex-col w-full border-opacity-50">
+        <div class="p-3">
+          <div class="form-control w-full max-w-xs">
+            <label class="label">
+              <span class="label-text">Enter a code to join an existing game</span>
+            </label>
+            <input 
+              type="text"
+              placeholder="Game Code"
+              class="input input-bordered input-lg text-3xl w-full max-w-xs mb-5"
+            />
+          </div>
+          <button class="btn btn-primary btn-block text-lg">
+            Join
+          </button>
+        </div>
+        <div class="divider">OR</div>
+        <div class="p-3">
+          <button 
+            :class="['btn btn-success btn-block text-lg', loading && 'loading']"
+            @click="loading = true"
+            :disabled="loading"
+          >
+            Create
+          </button>
+        </div>
       </div>
+    </div>
   </section>
 </template>
 
@@ -28,6 +38,7 @@ export default {
     return {
       createNewGame: true,
       gameId: "",
+      loading: false,
     }
   },
 }

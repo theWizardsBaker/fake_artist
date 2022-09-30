@@ -1,8 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import {
+  faUser,
+  faPaintbrush,
+  faCircleQuestion,
+} from "@fortawesome/free-solid-svg-icons";
 
-library.add(faPlus)
+library.add(faUser);
+library.add(faPaintbrush);
+library.add(faCircleQuestion);
 
-export default FontAwesomeIcon
+export default FontAwesomeIcon;

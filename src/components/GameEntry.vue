@@ -1,31 +1,49 @@
 <template>
-  <section class="card w-96 bg-base-100 shadow-xl">
+  <section class="card sm:w-96 bg-base-100 shadow-xl">
     <div class="card-body">
       <div class="flex flex-col w-full border-opacity-50">
         <div class="p-3">
           <div class="form-control w-full max-w-xs">
-            <label class="label">
-              <span class="label-text">Enter a code to join an existing game</span>
+            <!-- Game Code Input -->
+            <label class="label text-xs">
+              Enter a code to join an existing game
             </label>
-            <input 
+            <input
               type="text"
               placeholder="Game Code"
-              class="input input-bordered input-lg text-3xl w-full max-w-xs mb-5"
+              class="
+                input
+                input-bordered
+                input-lg
+                text-2xl
+                sm:text-3xl
+                w-full
+                max-w-xs
+                mb-5
+                text-center
+              "
+              :value="gameId"
             />
           </div>
-          <button class="btn btn-primary btn-block text-lg">
+          <!-- join button -->
+          <game-entry-button
+            @click="checkCode()"
+            :disabled="disabled"
+            class="btn-outline btn-info"
+          >
             Join
-          </button>
+          </game-entry-button>
         </div>
         <div class="divider">OR</div>
         <div class="p-3">
-          <button 
-            :class="['btn btn-success btn-block text-lg', loading && 'loading']"
-            @click="loading = true"
-            :disabled="loading"
+          <!-- create button -->
+          <game-entry-button
+            @click="createNewGame()"
+            :disabled="disabled"
+            class="btn-outline btn-success"
           >
             Create
-          </button>
+          </game-entry-button>
         </div>
       </div>
     </div>
@@ -33,13 +51,39 @@
 </template>
 
 <script>
+import GameEntryButton from "@/components/GameEntryButton.vue";
+import Modal from "@/components/ui/Modal.vue";
+
 export default {
+  components: {
+    GameEntryButton,
+    Modal,
+  },
+
   data() {
     return {
-      createNewGame: true,
-      gameId: "",
+      gameId: "3214234",
       loading: false,
-    }
+      disabled: false,
+    };
   },
-}
+
+  methods: {
+    checkCode() {
+      // check that game exists
+      if(true){
+        this.$emit("joinGame", this.gameId)
+      }
+    },
+    createNewGame() {
+      // fetch a new game's id
+      this.$emit("joinGame", this.gameId)
+    },
+    errorModal() {
+      // possible errors:
+      /* game in progress, gamedoes not exist, could not join, could not create, general error */
+      alert("HELLO");
+    },
+  },
+};
 </script>

@@ -18,7 +18,7 @@
 import GameEntry from "@/components/GameEntry.vue";
 
 export default {
-  name: "Home Page",
+  name: "HomePage",
   components: { GameEntry },
   methods: {
     joinGameLobby(gameId) {

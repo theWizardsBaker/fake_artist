@@ -32,14 +32,6 @@ export default {
   },
   data() {
     return {
-      players: [
-        { name: "Joe", color: "#44523" },
-        { name: "bob", color: "#44523" },
-        { name: "Steave", color: "#44523" },
-        { name: "Justing", color: "#44523" },
-        { name: "John", color: "#44523" },
-        { name: "Jeanne", color: "#44523" },
-      ],
     };
   },
 };

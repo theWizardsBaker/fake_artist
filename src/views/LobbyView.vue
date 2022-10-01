@@ -1,8 +1,9 @@
 <template>
   <div>
     <h3 class="text-lg">{{ $route.params.gameId }}</h3>
-    <player-create />
-    <player-list />
+
+    <player-create v-if="!created"/>
+    <player-list v-else/>
   </div>
 </template>
 
@@ -16,6 +17,7 @@ export default {
   },
   data() {
     return {
+      created: false
     };
   },
 };

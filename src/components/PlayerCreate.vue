@@ -3,8 +3,15 @@
     <div class="card-body">
       <div class="form-control mb-3">
         <label class="input-group">
-          <span>Color</span>
-          <v-swatches v-model="color" />
+          <span>Brush Color</span>
+          <v-swatches
+            id="swatch"
+            v-model="color"
+            swatch-size="54"
+            background-color="darkGray"
+            show-border
+            inline
+          />
         </label>
       </div>
       <div class="form-control mb-3">
@@ -63,3 +70,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+body {
+  background-color: black;
+}
+:deep(.vue-swatches__wrapper) {
+  padding: 10px;
+}
+</style>

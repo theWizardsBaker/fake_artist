@@ -1,6 +1,6 @@
 <template>
   <navigation>
-    <h1 class="text-2xl font-bold handwriting">Fake Artist</h1>
+    <h1 class="text-2xl font-bold handwriting mr-1">Fake Artist</h1>
     <font-awesome-icon icon="fa-paintbrush" />
   </navigation>
 

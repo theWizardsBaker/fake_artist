@@ -3,14 +3,22 @@
     <div class="hero-content">
       <div class="flex flex-col">
         <div class="p-4 text-center">
-          <label class="">Game Code</label>
+          <label>Game Code</label>
           <h3 class="font-medium text-6xl my-3 border-2 p-3 rounded-2xl">
             {{ $route.params.gameId }}
           </h3>
         </div>
         <player-create v-if="!created" @createdPlayer="created = true" />
-        <div v-else>
-          <button class="btn">Ready to play</button>
+        <div class="flex flex-col mt-5 grow" v-else>
+          <button
+            :class="[
+              'btn text-center mx-5',
+              ready ? 'btn-success btn-outline' : 'btn-info',
+            ]"
+            @click="playerReady()"
+          >
+            {{ ready ? "Ready" : "Click when ready" }}
+          </button>
           <player-list showReady />
         </div>
       </div>
@@ -31,7 +39,17 @@ export default {
   data() {
     return {
       created: false,
+      ready: false,
     };
+  },
+
+  methods: {
+    playerReady() {
+      if (this.ready) return;
+      this.ready = true;
+
+      this.$router.push({ name: "game-play" });
+    },
   },
 };
 </script>

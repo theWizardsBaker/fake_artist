@@ -15,8 +15,8 @@
     <div v-if="selectable">
       <input type="checkbox" />
     </div>
-    <div v-if="showReady">
-      <h3 v-show="isReady">READY</h3>
+    <div class="flex-auto text-right" v-if="showReady">
+      <div class="badge badge-success rounded-md" v-show="isReady">Ready</div>
     </div>
   </div>
 </template>

@@ -19,6 +19,6 @@ export default {
   components: {
     Navigation,
     RouterView,
-  }
-}
+  },
+};
 </script>

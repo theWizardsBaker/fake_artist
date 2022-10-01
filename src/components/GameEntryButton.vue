@@ -1,6 +1,6 @@
 <template>
   <button
-    :class="['btn btn-block text-lg', loading && 'loading', classes]"
+    :class="['btn btn-block text-lg', loading && 'loading']"
     :disabled="disabled"
   >
     <slot></slot>
@@ -12,7 +12,6 @@ export default {
   props: {
     loading: Boolean,
     disabled: Boolean,
-    classes: [String],
   },
 };
 </script>

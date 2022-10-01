@@ -3,7 +3,7 @@
     <div class="hero min-h-screen bg-base-200">
       <div class="hero-content">
         <div class="max-w-md">
-          <div class="flex items-center mr-1">
+          <div class="flex justify-center mr-1">
             <h1 class="text-5xl font-bold handwriting py-5">Fake Artist</h1>
             <font-awesome-icon icon="fa-paintbrush" class="fa-2xl" />
           </div>
@@ -22,8 +22,8 @@ export default {
   components: { GameEntry },
   methods: {
     joinGameLobby(gameId) {
-      this.$router.push({ name: 'game-lobby', params: { gameId: gameId } })
-    }
-  }
+      this.$router.push({ name: "game-lobby", params: { gameId: gameId } });
+    },
+  },
 };
 </script>

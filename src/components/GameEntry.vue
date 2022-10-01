@@ -11,17 +11,7 @@
             <input
               type="text"
               placeholder="Game Code"
-              class="
-                input
-                input-bordered
-                input-lg
-                text-2xl
-                sm:text-3xl
-                w-full
-                max-w-xs
-                mb-5
-                text-center
-              "
+              class="input input-bordered input-lg text-2xl sm:text-3xl w-full max-w-xs mb-5 text-center"
               :value="gameId"
             />
           </div>
@@ -71,13 +61,13 @@ export default {
   methods: {
     checkCode() {
       // check that game exists
-      if(true){
-        this.$emit("joinGame", this.gameId)
+      if (true) {
+        this.$emit("joinGame", this.gameId);
       }
     },
     createNewGame() {
       // fetch a new game's id
-      this.$emit("joinGame", this.gameId)
+      this.$emit("joinGame", this.gameId);
     },
     errorModal() {
       // possible errors:

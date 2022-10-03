@@ -6,6 +6,7 @@
           <player-list />
         </div>
         <div class="flex-auto">
+        	Category: Animals
           <drawing-canvas />
         </div>
       </div>

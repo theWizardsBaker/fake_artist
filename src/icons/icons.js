@@ -5,12 +5,16 @@ import {
   faUser,
   faPaintbrush,
   faCircleQuestion,
+  faCircle,
   faEraser,
+  faFloppyDisk,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faUser);
 library.add(faPaintbrush);
 library.add(faEraser);
 library.add(faCircleQuestion);
+library.add(faCircle);
+library.add(faFloppyDisk);
 
 export default FontAwesomeIcon;

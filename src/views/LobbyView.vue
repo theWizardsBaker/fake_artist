@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center min-h-screen bg-base-200">
+  <div class="flex justify-center bg-base-200">
     <div class="flex flex-col">
       <div class="p-4 text-center">
         <label>Game Code</label>

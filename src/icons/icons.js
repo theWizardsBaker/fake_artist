@@ -8,9 +8,11 @@ import {
   faCircle,
   faEraser,
   faFloppyDisk,
+  faUsers
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faUser);
+library.add(faUsers);
 library.add(faPaintbrush);
 library.add(faEraser);
 library.add(faCircleQuestion);

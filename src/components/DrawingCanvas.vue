@@ -1,17 +1,7 @@
 <template>
-  <div class="p-5">
-    <div class="flex flex-col gap-5">
-      <vue-drawing-canvas
-        ref="VueCanvasDrawing"
-        class="w-full max-h-full"
-        :lock="canvasLocked"
-        :lineWidth="lineWidth"
-        lineCap="round"
-        lineJoin="round"
-        @mouseup="hasMarked = true"
-        @touchend="hasMarked = true"
-      />
-      <div class="flex flex-wrap justify-center gap-5">
+  <div class="p-2 sm:p-10">
+    <div class="flex flex-col gap-5" >
+      <div class="flex justify-center flex-wrap gap-5">
         <div class="btn-group rounded-2xl">
           <div
             v-for="(brush, brushInd) in brushSizes"
@@ -38,6 +28,19 @@
           <span class="pt-2">Save</span>
         </button>
       </div>
+      <div>
+        <vue-drawing-canvas
+          :height="600"
+          :width="600"
+          ref="VueCanvasDrawing"
+          :lock="canvasLocked"
+          :lineWidth="lineWidth"
+          lineCap="round"
+          lineJoin="round"
+          @mouseup="hasMarked = true"
+          @touchend="hasMarked = true"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -53,6 +56,8 @@ export default {
   mounted() {
     // get existing drawing from the backend
     // this.initialImage =
+    // window.addEventListener('resize', this.getDimensions);
+    // this.getCanvasDimensions()
   },
 
   props: {
@@ -65,12 +70,14 @@ export default {
       type: Boolean,
       default: true,
     },
+
   },
 
   computed: {
     lineWidth() {
       return this.brushSizes[this.selectedBrush];
     },
+
     canvasLocked() {
       return this.hasMarked || !this.playerTurn;
     },
@@ -81,10 +88,12 @@ export default {
       hasMarked: false,
       selectedBrush: 0,
       brushSizes: [3, 5, 7],
+      canvasSize: '400',
     };
   },
 
   methods: {
+
     brushIconSize(size) {
       return ["", "fa-xl", "fa-2xl"][size];
     },
@@ -94,6 +103,14 @@ export default {
       // weird issue where the canvas doesn't unlock fast enough
       setTimeout(this.$refs.VueCanvasDrawing.undo, 10);
     },
+
+    // getCanvasDimensions() {
+    //   console.log(this.$refs.VueCanvasDrawing)
+    //   const containerWidthStr =  window.getComputedStyle(this.$refs.VueCanvasDrawing).width
+    //   const digitRegex = /\d+/;
+    //   this.canvasSize = digitRegex.exec(containerWidthStr)[0]
+    // },
+
   },
 };
 </script>

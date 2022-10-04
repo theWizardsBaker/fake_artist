@@ -1,6 +1,6 @@
 <template>
   <nav
-    class="relative w-full flex flex-wrap items-center justify-between py-1 bg-accent text-gray-500 hover:text-base-300 focus:text-base-300 shadow-lg"
+    class="sticky top-0 z-50 w-full flex flex-wrap items-center justify-between py-1 bg-accent text-gray-500 hover:text-base-300 focus:text-base-300 shadow-lg"
   >
     <div
       class="container-fluid w-full flex flex-wrap items-center justify-between px-3"

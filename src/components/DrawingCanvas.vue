@@ -21,7 +21,7 @@
         </button>
 
         <button
-          class="btn btn-success btn-wide gap-3 ml-auto flex-grow sm:flex-grow-0"
+          class="btn btn-success sm:btn-wide gap-3 sm:ml-auto sm:flex-grow-0"
           :disabled="!hasMarked"
         >
           <font-awesome-icon icon="fa-floppy-disk" class="fa-2xl" />

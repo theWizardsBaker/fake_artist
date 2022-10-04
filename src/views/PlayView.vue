@@ -1,18 +1,12 @@
 <template>
   <div class="min-h-screen bg-base-200">
-    <div class="flex justify-center pt-10">
-      <div>
-        <h3 class="font-medium leading-tight text-2xl text-center">Drawing</h3>
-        <h1
-          class="font-medium leading-tight text-4xl border-2 border-cyan-300 p-3 m-3 text-center rounded-2xl"
-        >
-          Animal: Dog
-        </h1>
-      </div>
+    <!-- show players the topic -->
+    <div class="flex justify-center pt-5">
+      <game-topic />
     </div>
     <div class="flex justify-center">
       <div class="flex flex-col lg:flex-row">
-        <div class="flex-initial hidden xl:block">
+        <div class="flex-initial hidden md:block">
           <player-list />
         </div>
         <div
@@ -27,28 +21,31 @@
           <player-list />
         </div>
       </div>
-      <div class="btm-nav btm-nav-sm sm:hidden">
-        <button
-          v-for="(display, displayInd) in displays"
-          :class="[selectedDisplay === displayInd && 'active']"
-          @click="selectedDisplay = displayInd"
-        >
-          <span class="btm-nav-label">
-            <font-awesome-icon :icon="display" class="fa-2xl" />
-          </span>
-        </button>
-      </div>
+    </div>
+    <!-- Bottom buttons on mobile devices -->
+    <div class="btm-nav btm-nav-sm md:hidden">
+      <button
+        v-for="(display, displayInd) in displays"
+        :class="[selectedDisplay === displayInd && 'active']"
+        @click="selectedDisplay = displayInd"
+      >
+        <span class="btm-nav-label">
+          <font-awesome-icon :icon="display" class="fa-2xl" />
+        </span>
+      </button>
     </div>
   </div>
 </template>
 
 <script>
 import PlayerList from "@/components/PlayerList.vue";
+import GameTopic from "@/components/GameTopic.vue";
 import DrawingCanvas from "@/components/DrawingCanvas.vue";
 
 export default {
   components: {
     PlayerList,
+    GameTopic,
     DrawingCanvas,
   },
 

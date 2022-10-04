@@ -9,6 +9,8 @@ import {
   faEraser,
   faFloppyDisk,
   faUsers,
+  faThumbsUp,
+  faThumbsDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faUser);
@@ -18,5 +20,7 @@ library.add(faEraser);
 library.add(faCircleQuestion);
 library.add(faCircle);
 library.add(faFloppyDisk);
+library.add(faThumbsUp);
+library.add(faThumbsDown);
 
 export default FontAwesomeIcon;

@@ -26,6 +26,23 @@
         </div>
         <div class="divider">OR</div>
         <div class="p-3">
+          <div>
+            <label class="label text-xs"> Turn Time Limit (Seconds) </label>
+            <input
+              type="range"
+              min="0"
+              max="3"
+              value="0"
+              class="range"
+              step="1"
+            />
+            <div class="w-full flex justify-between text-xs px-2 pb-5">
+              <span>15</span>
+              <span>30</span>
+              <span>60</span>
+              <span class="text-2xl align-top mt-[-9px]">&infin;</span>
+            </div>
+          </div>
           <!-- create button -->
           <game-entry-button
             @click="createNewGame()"

@@ -28,8 +28,18 @@
           <span class="pt-2">Save</span>
         </button>
       </div>
-      <div class="flex justify-center">
-        <div v-if="isRedrawingCanvasSize">LOADING</div>
+      <div class="flex justify-center items-center">
+        <button
+          v-if="isRedrawingCanvasSize"
+          class="
+            loading
+            btn
+            btn-outline
+            btn-xl
+            mt-10
+          ">
+          LOADING
+        </button>
         <vue-drawing-canvas
           v-else
           :height="size"
@@ -118,7 +128,7 @@ export default {
     resizeCanvas: debounce(function (size) {
       this.size = size - 40;
       this.isRedrawingCanvasSize = false;
-    }, 500),
+    }, 1000),
   },
 };
 </script>

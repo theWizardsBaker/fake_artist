@@ -1,7 +1,6 @@
-import { defineStore } from "pinia";
-
-export default defineStore("lobby", {
+export default {
   id: "lobby",
+  namespaced: true,
   state: () => ({
     gameId: null,
     players: [
@@ -56,4 +55,4 @@ export default defineStore("lobby", {
       "#F2C511",
     ],
   }),
-});
+};

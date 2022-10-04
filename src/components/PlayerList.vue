@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { mapState } from "pinia";
+import { mapState } from "vuex";
 import PlayerCard from "@/components/PlayerCard.vue";
 import lobbyStore from "@/stores/lobby.js";
 
@@ -34,7 +34,9 @@ export default {
   },
 
   computed: {
-    ...mapState(lobbyStore, ["players"]),
+    ...mapState({
+      players: state => state.lobby.players,
+    }),
   },
 
   data() {

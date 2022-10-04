@@ -1,10 +1,10 @@
-import { defineStore } from "pinia";
-
-export default defineStore("player", {
+export default {
+  id: "player",
+  namespaced: true,
   state: () => ({
     id: null,
     isArtist: false,
     name: null,
     color: null,
   }),
-});
+};

@@ -2,25 +2,10 @@
   <div class="min-h-screen bg-base-200">
     <div class="flex justify-center pt-10">
       <div>
-        <h3 class="
-          font-medium
-          leading-tight
-          text-2xl
-          text-center
-        ">
-          Drawing
-        </h3>
-        <h1 class="
-          font-medium
-          leading-tight
-          text-4xl
-          border-2
-          border-cyan-300
-          p-3
-          m-3
-          text-center
-          rounded-2xl
-        ">
+        <h3 class="font-medium leading-tight text-2xl text-center">Drawing</h3>
+        <h1
+          class="font-medium leading-tight text-4xl border-2 border-cyan-300 p-3 m-3 text-center rounded-2xl"
+        >
           Animal: Dog
         </h1>
       </div>
@@ -30,8 +15,13 @@
         <div class="flex-initial hidden xl:block">
           <player-list />
         </div>
-        <div class="flex-auto bob" v-show="selectedDisplay === 0" ref="canvas" :style="{ width: width, height: width}">
-          <drawing-canvas />
+        <div
+          class="flex-auto"
+          v-show="selectedDisplay === 0"
+          ref="canvas"
+          :style="{ width: width, height: width }"
+        >
+          <drawing-canvas :canvasSize="canvasSize" />
         </div>
         <div class="flex-auto" v-show="selectedDisplay === 1">
           <player-list />
@@ -40,7 +30,7 @@
       <div class="btm-nav btm-nav-sm sm:hidden">
         <button
           v-for="(display, displayInd) in displays"
-          :class="[ selectedDisplay === displayInd && 'active' ]"
+          :class="[selectedDisplay === displayInd && 'active']"
           @click="selectedDisplay = displayInd"
         >
           <span class="btm-nav-label">
@@ -63,42 +53,44 @@ export default {
   },
 
   mounted() {
-    window.addEventListener('resize', this.getWindowDimensions);
+    window.addEventListener("resize", this.getWindowDimensions);
+    this.$nextTick(() => {
+      this.getCanvasDimensions();
+    });
   },
 
   unmounted() {
-    window.removeEventListener('resize', this.getWindowDimensions);
+    window.removeEventListener("resize", this.getWindowDimensions);
   },
 
   watch: {
     width(newDisplay, oldDisplay) {
-      this.selectedDisplay = 0
-      this.getCanvasDimensions()
-    }
+      this.selectedDisplay = 0;
+      this.getCanvasDimensions();
+    },
   },
 
   data() {
     return {
       selectedDisplay: 0,
-      displays: [ "fa-paintbrush", "fa-users" ],
+      displays: ["fa-paintbrush", "fa-users"],
       width: document.documentElement.clientWidth,
-      canvasSize: '400',
+      canvasSize: "400",
     };
   },
 
   methods: {
-    
     getWindowDimensions() {
       this.width = document.documentElement.clientWidth;
     },
 
     getCanvasDimensions() {
-      const containerWidthStr =  window.getComputedStyle(this.$refs.canvas).width
+      const containerWidthStr = window.getComputedStyle(
+        this.$refs.canvas
+      ).width;
       const digitRegex = /\d+/;
-      this.canvasSize = digitRegex.exec(containerWidthStr)[0]
-      console.log(this.canvasSize)
-    }
-
+      this.canvasSize = digitRegex.exec(containerWidthStr)[0];
+    },
   },
 };
 </script>

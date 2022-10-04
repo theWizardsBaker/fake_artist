@@ -1,6 +1,6 @@
 <template>
   <div class="p-2 sm:p-10">
-    <div class="flex flex-col gap-5" >
+    <div class="flex flex-col gap-5">
       <div class="flex justify-center flex-wrap gap-5">
         <div class="btn-group rounded-2xl">
           <div
@@ -28,10 +28,12 @@
           <span class="pt-2">Save</span>
         </button>
       </div>
-      <div>
+      <div class="flex justify-center">
+        <div v-if="isRedrawingCanvasSize">LOADING</div>
         <vue-drawing-canvas
-          :height="600"
-          :width="600"
+          v-else
+          :height="size"
+          :width="size"
           ref="VueCanvasDrawing"
           :lock="canvasLocked"
           :lineWidth="lineWidth"
@@ -46,6 +48,7 @@
 </template>
 
 <script>
+import { debounce } from "debounce";
 import VueDrawingCanvas from "vue-drawing-canvas";
 
 export default {
@@ -56,8 +59,6 @@ export default {
   mounted() {
     // get existing drawing from the backend
     // this.initialImage =
-    // window.addEventListener('resize', this.getDimensions);
-    // this.getCanvasDimensions()
   },
 
   props: {
@@ -66,11 +67,10 @@ export default {
       default: false,
     },
 
-    playerTurn: {
-      type: Boolean,
-      default: true,
+    canvasSize: {
+      type: String,
+      default: "25",
     },
-
   },
 
   computed: {
@@ -79,38 +79,46 @@ export default {
     },
 
     canvasLocked() {
-      return this.hasMarked || !this.playerTurn;
+      return this.hasMarked || this.lockCanvas;
+    },
+  },
+
+  watch: {
+    canvasSize(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.isRedrawingCanvasSize = true;
+        this.resizeCanvas(newVal);
+      }
     },
   },
 
   data() {
     return {
+      isRedrawingCanvasSize: true,
       hasMarked: false,
       selectedBrush: 0,
       brushSizes: [3, 5, 7],
-      canvasSize: '400',
+      size: 0,
     };
   },
 
   methods: {
-
     brushIconSize(size) {
       return ["", "fa-xl", "fa-2xl"][size];
     },
 
     undoDrawing() {
       this.hasMarked = false;
-      // weird issue where the canvas doesn't unlock fast enough
-      setTimeout(this.$refs.VueCanvasDrawing.undo, 10);
+      // canvas doesn't unlock fast enough
+      this.$nextTick(() => {
+        this.$refs.VueCanvasDrawing.undo();
+      });
     },
 
-    // getCanvasDimensions() {
-    //   console.log(this.$refs.VueCanvasDrawing)
-    //   const containerWidthStr =  window.getComputedStyle(this.$refs.VueCanvasDrawing).width
-    //   const digitRegex = /\d+/;
-    //   this.canvasSize = digitRegex.exec(containerWidthStr)[0]
-    // },
-
+    resizeCanvas: debounce(function (size) {
+      this.size = size - 40;
+      this.isRedrawingCanvasSize = false;
+    }, 500),
   },
 };
 </script>

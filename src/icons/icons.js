@@ -8,7 +8,7 @@ import {
   faCircle,
   faEraser,
   faFloppyDisk,
-  faUsers
+  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faUser);

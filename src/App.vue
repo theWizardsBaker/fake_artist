@@ -16,9 +16,22 @@ import { RouterView } from "vue-router";
 import Navigation from "@/components/ui/Navigation.vue";
 
 export default {
+  name: "Fake Artist",
+
   components: {
     Navigation,
     RouterView,
+  },
+
+  beforeMount() {
+    // find if we already have an existing game
+    this.$socket.emit("game:find", "12345");
+  },
+
+  sockets: {
+    gameFound() {
+      alert("GAME FOUND!");
+    },
   },
 };
 </script>

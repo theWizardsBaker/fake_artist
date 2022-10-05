@@ -35,7 +35,7 @@ export default {
 
   computed: {
     ...mapState({
-      players: state => state.lobby.players,
+      players: (state) => state.lobby.players,
     }),
   },
 

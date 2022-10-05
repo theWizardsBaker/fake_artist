@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 sm:p-10">
+  <div class="p-2 sm:p-5">
     <div class="flex flex-col gap-5">
       <div class="flex justify-center flex-wrap gap-5">
         <div class="btn-group rounded-2xl">
@@ -31,13 +31,8 @@
       <div class="flex justify-center items-center">
         <button
           v-if="isRedrawingCanvasSize"
-          class="
-            loading
-            btn
-            btn-outline
-            btn-xl
-            mt-10
-          ">
+          class="loading btn btn-outline btn-xl mt-10"
+        >
           LOADING
         </button>
         <vue-drawing-canvas

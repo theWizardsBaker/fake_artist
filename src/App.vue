@@ -12,8 +12,10 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { RouterView } from "vue-router";
 import Navigation from "@/components/ui/Navigation.vue";
+import store from "@/stores";
 
 export default {
   name: "Fake Artist",
@@ -25,13 +27,25 @@ export default {
 
   beforeMount() {
     // find if we already have an existing game
-    this.$socket.emit("game:find", "12345");
+    // this.$socket.emit("game:find", "12345");
+  },
+
+  watch: {
+    gameId() {
+      alert("IN GAME!");
+    },
+  },
+
+  computed: {
+    ...mapState({
+      gameId: (state) => state.lobby.gameId,
+    }),
   },
 
   sockets: {
-    gameFound() {
-      alert("GAME FOUND!");
-    },
+    // gameFound() {
+    //   alert("GAME FOUND!");
+    // },
   },
 };
 </script>

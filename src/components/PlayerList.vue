@@ -15,7 +15,7 @@
 <script>
 import { mapState } from "vuex";
 import PlayerCard from "@/components/PlayerCard.vue";
-import lobbyStore from "@/stores/lobby.js";
+import store from "@/stores";
 
 export default {
   props: {

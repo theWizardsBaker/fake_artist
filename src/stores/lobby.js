@@ -1,58 +1,35 @@
 export default {
   id: "lobby",
+
   namespaced: true,
+
   state: () => ({
     gameId: null,
-    players: [
-      {
-        id: 1,
-        name: "Joe",
-        color: "#ffffff",
-        isReady: false,
-      },
-      {
-        id: 2,
-        name: "bob",
-        color: "#ffffff",
-        isReady: false,
-      },
-      {
-        id: 3,
-        name: "Steave",
-        color: "#ffffff",
-        isReady: true,
-      },
-      {
-        id: 4,
-        name: "Justing",
-        color: "#ffffff",
-        isReady: true,
-      },
-      {
-        id: 5,
-        name: "John",
-        color: "#ffffff",
-        isReady: true,
-      },
-      {
-        id: 6,
-        name: "Jeanne",
-        color: "#ffffff",
-        isReady: true,
-      },
-    ],
-    swatches: [
-      "#1FBC9C",
-      "#1CA085",
-      "#2ECC70",
-      "#27AF60",
-      "#3398DB",
-      "#2980B9",
-      "#A463BF",
-      "#8E43AD",
-      "#3D556E",
-      "#222F3D",
-      "#F2C511",
-    ],
+    players: [],
+    swatches: [],
   }),
+
+  mutations: {
+    gameId(state, lobby) {
+      state.gameId = lobby;
+    },
+
+    addPlayer(state, player) {},
+
+    removePlayer(state, player) {},
+  },
+
+  actions: {
+    "SOCKET_success:lobby_joined"({ commit }, lobby) {
+      commit("gameId", lobby);
+    },
+
+    "SOCKET_success:player_joined"({ commit }, player) {
+      commit("addPlayer", player);
+    },
+
+    "SOCKET_success:player_left"({ commit }, player) {
+      commit("gameId", player);
+    },
+  },
 };

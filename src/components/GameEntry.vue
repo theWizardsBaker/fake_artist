@@ -2,6 +2,11 @@
   <section class="card sm:w-96 bg-base-100 shadow-xl">
     <div class="card-body">
       <div class="flex flex-col w-full border-opacity-50">
+        <alert alertLevel="error" v-show="error">
+          <template v-slot:content>
+            <span class="text-xs">{{ errorMessage }}</span>
+          </template>
+        </alert>
         <div class="p-3">
           <div class="form-control w-full max-w-xs">
             <!-- Game Code Input -->
@@ -12,13 +17,13 @@
               type="text"
               placeholder="Game Code"
               class="input input-bordered input-lg text-2xl sm:text-3xl w-full max-w-xs mb-5 text-center"
-              :value="gameId"
+              v-model="gameId"
             />
           </div>
           <!-- join button -->
           <game-entry-button
             @click="checkCode()"
-            :disabled="disabled"
+            :disabled="disabled || gameId.length < 1"
             class="btn-outline btn-info"
           >
             Join
@@ -31,15 +36,13 @@
             <input
               type="range"
               min="0"
-              max="3"
-              value="0"
+              :max="timeLimits.length"
+              v-model="turnTimeLimit"
               class="range"
               step="1"
             />
             <div class="w-full flex justify-between text-xs px-2 pb-5">
-              <span>15</span>
-              <span>30</span>
-              <span>60</span>
+              <span v-for="timeLimit in timeLimits">{{ timeLimit }}</span>
               <span class="text-2xl align-top mt-[-9px]">&infin;</span>
             </div>
           </div>
@@ -60,36 +63,53 @@
 <script>
 import GameEntryButton from "@/components/GameEntryButton.vue";
 import Modal from "@/components/ui/Modal.vue";
+import Alert from "@/components/ui/Alert.vue";
 
 export default {
+  name: "GameEntry",
+
   components: {
     GameEntryButton,
     Modal,
+    Alert,
   },
 
   data() {
     return {
-      gameId: "3214234",
+      gameId: "",
+      turnTimeLimit: 0,
       loading: false,
       disabled: false,
+      error: false,
+      errorMessage: "",
+      timeLimits: ["15", "30", "60"],
     };
+  },
+
+  sockets: {
+    "error:game_not_found"(response) {
+      this.errorModal(`Could not join game: ${response}`);
+    },
   },
 
   methods: {
     checkCode() {
-      // check that game exists
-      if (true) {
-        this.$emit("joinGame", this.gameId);
-      }
+      this.$socket.emit("lobby:join", this.gameId);
     },
+
     createNewGame() {
-      // fetch a new game's id
-      this.$emit("joinGame", this.gameId);
+      const timeLimit =
+        this.turnTimeLimit > this.timeLimits.length
+          ? this.timeLimits[this.turnTimeLimit]
+          : null;
+      this.$socket.emit("game:create", timeLimit);
     },
-    errorModal() {
+
+    errorModal(msg) {
       // possible errors:
       /* game in progress, gamedoes not exist, could not join, could not create, general error */
-      alert("HELLO");
+      this.errorMessage = msg;
+      this.error = true;
     },
   },
 };

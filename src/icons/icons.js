@@ -9,8 +9,10 @@ import {
   faEraser,
   faFloppyDisk,
   faUsers,
-  faThumbsUp,
-  faThumbsDown,
+  faCircleXmark,
+  faTriangleExclamation,
+  faCircleInfo,
+  faCircleCheck
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faUser);
@@ -20,7 +22,9 @@ library.add(faEraser);
 library.add(faCircleQuestion);
 library.add(faCircle);
 library.add(faFloppyDisk);
-library.add(faThumbsUp);
-library.add(faThumbsDown);
+library.add(faCircleXmark);
+library.add(faTriangleExclamation);
+library.add(faCircleInfo);
+library.add(faCircleCheck);
 
 export default FontAwesomeIcon;

@@ -6,11 +6,11 @@ export default {
   state: () => ({
     gameId: null,
     players: [],
-    swatches: [],
   }),
 
   mutations: {
-    gameId(state, lobby) {
+
+    updateGameId(state, lobby) {
       state.gameId = lobby;
     },
 
@@ -20,8 +20,9 @@ export default {
   },
 
   actions: {
-    "SOCKET_success:lobby_joined"({ commit }, lobby) {
-      commit("gameId", lobby);
+
+    "SOCKET_success:lobby_created"({ commit }, lobby) {
+      commit("updateGameId", lobby);
     },
 
     "SOCKET_success:player_joined"({ commit }, player) {

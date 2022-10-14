@@ -4,10 +4,13 @@ services:
     container_name: frontend
     build:
       context: .
-    command: yarn dev --host
-    volumes:
-      - .:/app
-      - /app/node_modules
+      args:
+        NODE_ENV: development
+    command: "dev"
     ports:
       - 5173:5173
-    restart: always
+    volumes:
+      - ./src/:/var/www/http/app/src
+      - ./public/:/var/www/http/app/public
+    environment:
+      BACKEND_URL: "http://127.0.0.1:3000"

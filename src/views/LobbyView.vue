@@ -7,8 +7,7 @@
           {{ $route.params.gameId }}
         </h3>
       </div>
-      <player-create v-if="!created" @createdPlayer="created = true" />
-      <div class="flex flex-col mt-5 grow" v-else>
+      <div class="flex flex-col mt-5 grow">
         <button
           :class="[
             'btn text-center mx-5',
@@ -25,19 +24,15 @@
 </template>
 
 <script>
-import PlayerCreate from "@/components/PlayerCreate.vue";
 import PlayerList from "@/components/PlayerList.vue";
 
 export default {
   components: {
-    PlayerCreate,
     PlayerList,
   },
 
   data() {
     return {
-      created: false,
-      ready: false,
     };
   },
 
@@ -46,7 +41,6 @@ export default {
       if (this.ready) return;
       this.ready = true;
 
-      this.$router.push({ name: "game-play" });
     },
   },
 };

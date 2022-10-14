@@ -1,17 +1,20 @@
 <template>
-  <navigation>
-    <h1 class="text-2xl font-bold handwriting mr-1">Fake Artist</h1>
-    <font-awesome-icon icon="fa-paintbrush" />
-  </navigation>
+  <div data-theme="business">
+    <navigation>
+      <h1 class="text-2xl font-bold handwriting mr-1">Fake Artist</h1>
+      <font-awesome-icon icon="fa-paintbrush" />
+    </navigation>
 
-  <router-view v-slot="{ Component, route }">
-    <transition :name="route.meta.transition || 'fade'">
-      <component :is="Component" />
-    </transition>
-  </router-view>
+    <router-view v-slot="{ Component, route }">
+      <FadeInOut :appear="true" entry="center" exit="center" :duration="500">
+        <component :is="Component" />
+      </FadeInOut>
+    </router-view>
+  </div>
 </template>
 
 <script>
+import { FadeInOut } from 'vue3-transitions'
 import { mapState } from "vuex";
 import { RouterView } from "vue-router";
 import Navigation from "@/components/ui/Navigation.vue";
@@ -23,6 +26,7 @@ export default {
   components: {
     Navigation,
     RouterView,
+    FadeInOut
   },
 
   beforeMount() {
@@ -31,8 +35,8 @@ export default {
   },
 
   watch: {
-    gameId() {
-      alert("IN GAME!");
+    gameId(gameId) {
+      this.$router.push({ name: 'player-create', params: { gameId: gameId } })
     },
   },
 

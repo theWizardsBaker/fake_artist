@@ -2,6 +2,13 @@
   <div :class="['alert shadow-lg', 'alert-' + alertLevel]">
     <div>
       <div>
+        <template v-for="alert in Object.keys(alertTypes)">
+          <font-awesome-icon
+            v-if="alertLevel === alert"
+            :icon="alertTypes[alert]"
+            class="fa-xl mr-2" 
+          />
+        </template>
         <slot name="content"></slot>
       </div>
     </div>
@@ -18,9 +25,19 @@ export default {
       type: String,
       default: "info",
       validator(value) {
-        return ["info", "success", "warning", "error"].includes(value);
+        return ["info", "success", "warning", "error"].includes(value)
       },
     },
   },
+  data(){
+    return {
+      alertTypes: {
+        info: 'fa-circle-info',
+        success: 'fa-circle-check',
+        warning: 'fa-triangle-exclaimation',
+        error: 'fa-circle-xmark'
+      },
+    }
+  }
 };
 </script>

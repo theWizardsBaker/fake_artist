@@ -855,6 +855,11 @@ convert-source-map@^1.7.0:
   dependencies:
     safe-buffer "~5.1.1"
 
+core-js@^3.6.5:
+  version "3.25.5"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.25.5.tgz#e86f651a2ca8a0237a5f064c2fe56cef89646e27"
+  integrity sha512-nbm6eZSjm+ZuBQxCUPQKQCoUEfFOXjUZ8dTTyikyKaWrTYmAVbykQfwsKE5dBK88u3QCkCrzsx/PPlKfhsvgpw==
+
 cross-spawn@^7.0.2:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
@@ -2286,7 +2291,15 @@ vue3-swatches@^1.0.10:
   resolved "https://registry.yarnpkg.com/vue3-swatches/-/vue3-swatches-1.0.10.tgz#4934ec1928deff7ae23fb3a65ce4d0ecea850512"
   integrity sha512-rbuSClhK4sOFVtgRAtFhPcrtZwDy/5IvVOLT14Jge71oe8d8OB7cUD46CDKAwquYPCUhVwRDvTLkfgwXJQnB9Q==
 
-vue@^3.2.38:
+vue3-transitions@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/vue3-transitions/-/vue3-transitions-1.0.0.tgz#19825fe222f863f768012110d72f18a252b656b6"
+  integrity sha512-6A6w6QiMF4J6nx8XZre64AnEsNfRDlCSoBdvANsj2DPTqRsfDVV7gaoMLj2kjBo+LwwKhkQd2hzIW6/J4fOOYQ==
+  dependencies:
+    core-js "^3.6.5"
+    vue "^3.0.0"
+
+vue@^3.0.0, vue@^3.2.38:
   version "3.2.40"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.2.40.tgz#23f387f6f9b3a0767938db6751e4fb5900f0ee34"
   integrity sha512-1mGHulzUbl2Nk3pfvI5aXYYyJUs1nm4kyvuz38u4xlQkLUn1i2R7nDbI4TufECmY8v1qNBHYy62bCaM+3cHP2A==

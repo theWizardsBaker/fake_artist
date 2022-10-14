@@ -67,7 +67,7 @@ export default {
   sockets: {
 
     "success:lobby_found"(gameId) {
-      this.$emit("success", gameId);
+      this.$socket.emit("lobby:join", gameId);
     },
 
     "error:lobby_found"(errorMsg) {
@@ -76,12 +76,17 @@ export default {
       this.$emit("error", `Game not found: ${errorMsg}`);
     },
 
+    "error:lobby_joined"(errorMsg) {
+      this.gameId = "";
+      this.loading = false;
+      this.$emit("error", `Error: ${errorMsg}`);
+    },
+
   },
 
   methods: {
 
     findLobby() {
-      this.$emit("clicked")
       this.loading = true
       this.$socket.emit("lobby:find", this.gameId)
     },

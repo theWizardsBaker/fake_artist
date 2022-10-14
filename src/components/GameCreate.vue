@@ -74,12 +74,22 @@ export default {
   sockets: {
     
     "success:lobby_created"(gameId) {
-      this.$emit("success", gameId);
+      this.$socket.emit("lobby:join", { 
+        lobby: gameId,
+        playerName: this.name,
+        isSpectator: this.spectator,
+      })
     },
 
     "error:lobby_created"(response) {
       this.loading = false;
       this.$emit("error", `Error: ${response}`);
+    },
+
+    "error:lobby_joined"(errorMsg) {
+      this.gameId = "";
+      this.loading = false;
+      this.$emit("error", `Unable to create game`);
     },
 
   },

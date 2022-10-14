@@ -1,6 +1,5 @@
 <template>
   <div :class="['alert shadow-lg', 'alert-' + alertLevel]">
-    <div>
       <div>
         <template v-for="alert in Object.keys(alertTypes)">
           <font-awesome-icon
@@ -9,12 +8,9 @@
             class="fa-xl mr-2" 
           />
         </template>
-        <slot name="content"></slot>
+        <slot name="content" tag="span"></slot>
+        <slot name="action"></slot>
       </div>
-    </div>
-    <div class="flex-none">
-      <slot name="action"></slot>
-    </div>
   </div>
 </template>
 

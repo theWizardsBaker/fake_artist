@@ -6,23 +6,42 @@ export default {
   state: () => ({
     gameId: null,
     players: [],
+    swatches: []
   }),
 
   mutations: {
 
-    updateGameId(state, lobby) {
-      state.gameId = lobby;
+    updateGameId(state, gameId) {
+      state.gameId = gameId;
     },
 
-    addPlayer(state, player) {},
+    updateSwatches(state, colors) {
+      state.swatches = colors;
+    },
 
-    removePlayer(state, player) {},
+    setPlayers(state, players) {
+      state.players = players
+    },
+
+    addPlayer(state, player) {
+      state.players.push(player)
+    },
+
+    removePlayer(state, player) {
+      const playerInd = state.players.findIndex((p) => p.id === player.id)
+      if(playerInd){
+        state.players.splice(playerInd, 1)
+      }
+    },
+
   },
 
   actions: {
 
-    "SOCKET_success:lobby_created"({ commit }, lobby) {
-      commit("updateGameId", lobby);
+    "SOCKET_success:lobby_joined"({ commit }, { room, players, colors }) {
+      commit("updateGameId", room);
+      commit("setPlayers", players);
+      commit("updateSwatches", colors);
     },
 
     "SOCKET_success:player_joined"({ commit }, player) {
@@ -30,7 +49,15 @@ export default {
     },
 
     "SOCKET_success:player_left"({ commit }, player) {
-      commit("gameId", player);
+      commit("removePlayer", player);
     },
+
+    "SOCKET_success:colors_update"({ commit }, colors) {
+      commit("updateSwatches", colors);
+    },
+
+    updateGameId({ commit }, gameId) {
+      commit("updateGameId", gameId);
+    }
   },
 };

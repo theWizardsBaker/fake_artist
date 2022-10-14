@@ -6,7 +6,7 @@
         class="px-6 py-2 w-full rounded-t-lg border-b border-gray-600 last:border-b-0"
         v-for="player in players"
       >
-        <player-card v-bind="player" :key="player.id" showReady />
+        <player-card v-bind="player" showReady />
       </li>
     </ul>
   </div>
@@ -14,19 +14,22 @@
 
 <script>
 import { mapState } from "vuex";
-import PlayerCard from "@/components/PlayerCard.vue";
 import store from "@/stores";
+import PlayerCard from "@/components/PlayerCard.vue";
 
 export default {
   props: {
+
     showReady: {
       type: Boolean,
       default: false,
     },
+    
     showSelect: {
       type: Boolean,
       default: false,
     },
+
   },
 
   components: {

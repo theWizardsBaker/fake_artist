@@ -1,12 +1,12 @@
 import { createStore } from "vuex";
+import createPersistedState from "vuex-persistedstate";
 import lobby from "./lobby.js";
 import player from "./player.js";
-import color from "./color.js";
 
 export default createStore({
   modules: {
     lobby: lobby,
     player: player,
-    color: color
   },
+  plugins: [createPersistedState()],
 });

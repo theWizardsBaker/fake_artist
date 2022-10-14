@@ -1,10 +1,31 @@
 <template>
   <div data-theme="business">
     <navigation>
-      <h1 class="text-2xl font-bold handwriting mr-1">Fake Artist</h1>
-      <font-awesome-icon icon="fa-paintbrush" />
+      <template v-slot:title>
+        <h1 class="text-2xl font-bold handwriting mr-1">Fake Artist</h1>
+        <font-awesome-icon icon="fa-paintbrush" />
+      </template>
+      <template v-slot:right>
+        <div
+          class="
+            flex
+            items-center
+            gap-2
+            text-gray-900
+            hover:text-accent
+            hover:bg-gray-900
+            focus:text-accent
+            focus:bg-gray-900
+            p-1
+            px-3
+            rounded cursor-pointer
+          "
+        >
+          <font-awesome-icon icon="fa-circle-question" />
+          How to play
+        </div>
+      </template>
     </navigation>
-
     <router-view v-slot="{ Component, route }">
       <FadeInOut :appear="true" entry="center" exit="center" :duration="500">
         <component :is="Component" />
@@ -36,7 +57,11 @@ export default {
 
   watch: {
     gameId(gameId) {
-      this.$router.push({ name: 'player-create', params: { gameId: gameId } })
+      if(!!gameId){
+        this.$router.replace({ name: 'game-lobby', params: { gameId: gameId } })
+      } else {
+        this.$router.replace({ name: 'home' })
+      }
     },
   },
 

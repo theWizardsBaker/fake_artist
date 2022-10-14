@@ -23,7 +23,10 @@ app.use(store);
 app.use(
   new VueSocketIO({
     debug: true,
-    connection: SocketIO("http://127.0.0.1:3000", {}),
+    connection: SocketIO(import.meta.env.VITE_BACKEND_URL, {
+      withCredentials: true,
+      rejectUnauthorized: false
+    }),
     vuex: {
       store,
       actionPrefix: "SOCKET_",

@@ -79,11 +79,25 @@ export default {
     }),
   },
 
+  watch: {
+    color(newColor, oldColor) {
+      this.$socket.emit("colors:update", { newColor, oldColor })
+    }
+  },
+
   data() {
     return {
       color: "",
       ready: false
     };
+  },
+
+  sockets: {
+
+    "SOCKET_failed:colors_updated"(colors) {
+      this.color = ""
+    },
+
   },
 
   methods: {
@@ -94,7 +108,7 @@ export default {
     },
 
     exitGame() {
-      this.$store.dispatch("lobby/updateGameId", null)
+      this.$socket.emit("lobby:quit")
     }
 
   },
@@ -102,6 +116,10 @@ export default {
 </script>
 
 <style>
+  div.vue-swatches__swatch--is-disabled {
+    opacity: 30%;
+  }
+
   div.vue-swatches__swatch {
     margin:  8px !important;
   }

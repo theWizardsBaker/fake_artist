@@ -44,6 +44,10 @@ export default {
       commit("updateSwatches", colors);
     },
 
+    "SOCKET_success:lobby_quit"({ commit }) {
+      commit("updateGameId", null);
+    },
+
     "SOCKET_success:player_joined"({ commit }, player) {
       commit("addPlayer", player);
     },
@@ -56,8 +60,17 @@ export default {
       commit("updateSwatches", colors);
     },
 
+    "SOCKET_success:colors_updated"({ commit }, colors) {
+      commit("updateSwatches", colors);
+    },
+
+    "SOCKET_failed:colors_updated"({ commit }, colors) {
+      commit("updateSwatches", colors);
+    },
+
     updateGameId({ commit }, gameId) {
       commit("updateGameId", gameId);
-    }
+    },
+
   },
 };

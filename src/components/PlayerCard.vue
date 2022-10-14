@@ -27,12 +27,30 @@ export default {
     id: Number,
     name: String,
     color: String,
-    selectable: Boolean,
-    selected: Boolean,
-    showTurn: Boolean,
-    isTurn: Boolean,
-    showReady: Boolean,
-    isReady: Boolean,
+    selectable: {
+      type: Boolean,
+      default: false
+    },
+    selected: {
+      type: Boolean,
+      default: false
+    },
+    showTurn: {
+      type: Boolean,
+      default: false
+    },
+    isTurn: {
+      type: Boolean,
+      default: false
+    },
+    showReady: {
+      type: Boolean,
+      default: false
+    },
+    isReady: {
+      type: Boolean,
+      default: false
+    },
   },
 };
 </script>

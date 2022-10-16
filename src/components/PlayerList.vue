@@ -6,7 +6,12 @@
         class="px-6 py-2 w-full rounded-t-lg border-b border-gray-600 last:border-b-0"
         v-for="(player, playerInd) in players"
       >
-        <player-card v-bind="player" :key="player._id" showReady />
+        <player-card
+          v-bind="player"
+          :order="playerInd + 1"
+          :key="player._id"
+          showReady 
+        />
       </li>
     </ul>
   </div>
@@ -36,7 +41,9 @@ export default {
 
   computed: {
     ...mapState({
-      players: (state) => state.lobby.players,
+      players: (state) => {
+        return state.lobby.players.sort((p1, p2) => p1.order < p2.order);
+      },
     }),
   },
 

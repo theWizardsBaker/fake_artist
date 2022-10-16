@@ -12,7 +12,7 @@
               <a
                 v-for="(form, formInd) in gameForms"
                 :class="[
-                  'tab tab-bordered tab-lg flex-1',
+                  'tab tab-bordered sm:tab-lg flex-1',
                   formInd === formToShow && 'tab-active',
                 ]"
                 @click="setTab(formInd)"

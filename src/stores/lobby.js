@@ -1,3 +1,5 @@
+import { getTransitionRawChildren } from "vue";
+
 export default {
   id: "lobby",
 
@@ -11,6 +13,7 @@ export default {
   }),
 
   getters: {
+    
     colorSwatches(state) {
       const playerColors = state.players.map((p) => p.color);
       return state.swatches.map((s) => {
@@ -18,13 +21,20 @@ export default {
         return s;
       });
     },
+
     player(state) {
       return state.players.find((p) => p._id === state.playerId);
     },
+
+    isLeader(state, getters) {
+      if(!getters.player) { return false }
+      const minTurnOrder = Math.min(...state.players.map(p => p.order));
+      return minTurnOrder === getters.player.order;
+    }
   },
 
   mutations: {
-    updateGameId(state, code) {
+    updateGameCode(state, code) {
       state.code = code;
     },
 
@@ -50,35 +60,33 @@ export default {
       state.players.push(player);
     },
 
-    removePlayer(state, player) {
-      const playerInd = state.players.findIndex((p) => p.id === player.id);
-      if (playerInd) {
-        state.players.splice(playerInd, 1);
-      }
+    removePlayer(state, playerId) {
+      const playerInd = state.players.findIndex((p) => p._id === playerId);
+      state.players.splice(playerInd, 1);
     },
   },
 
   actions: {
     "SOCKET_success:lobby_joined"(
       { commit },
-      { room, players, colors, playerId }
+      { gameLobby, playerId }
     ) {
-      commit("updateGameId", room);
-      commit("setPlayers", players);
-      commit("updateSwatches", colors);
+      commit("updateGameCode", gameLobby.room);
+      commit("setPlayers", gameLobby.players);
+      commit("updateSwatches", gameLobby.colors);
       commit("setPlayerId", playerId);
     },
 
     "SOCKET_success:lobby_quit"({ commit }) {
-      commit("updateGameId", null);
+      commit("updateGameCode", null);
+    },
+
+    "SOCKET_success:player_quit"({ commit }, playerId) {
+      commit("removePlayer", playerId);
     },
 
     "SOCKET_success:player_joined"({ commit }, player) {
       commit("addPlayer", player);
-    },
-
-    "SOCKET_success:player_left"({ commit }, player) {
-      commit("removePlayer", player);
     },
 
     "SOCKET_success:colors_updated"({ commit }, player) {
@@ -89,8 +97,8 @@ export default {
       commit("updatePlayer", player);
     },
 
-    updateGameId({ commit }, code) {
-      commit("updateGameId", code);
+    updateGameCode({ commit }, code) {
+      commit("updateGameCode", code);
     },
   },
 };

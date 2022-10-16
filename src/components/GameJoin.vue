@@ -8,7 +8,7 @@
       <input
         type="text"
         placeholder="Game Code"
-        class="input input-bordered input-lg text-2xl sm:text-3xl w-fill mb-5 text-center"
+        class="input input-bordered sm:input-lg text-xl sm:text-3xl w-fill mb-5 text-center"
         v-model="gameId"
       />
     </div>

@@ -1,10 +1,20 @@
 export default {
-  id: "player",
+  id: "game",
+
   namespaced: true,
-  state: () => ({
-    id: null,
-    isArtist: false,
-    name: null,
-    color: null,
-  }),
+
+    state: () => ({
+      inProgress: false
+    }),
+
+  mutations: {
+    
+  },
+
+  actions: {
+
+    "SOCKET_success:start_game"({ commit }){
+
+    }
+  }
 };

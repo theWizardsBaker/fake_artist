@@ -1,5 +1,25 @@
 <template>
   <main>
+    <div class="sm:relative m-2">
+      <button
+        class="
+          btn
+          btn-square
+          btn-info
+          btn-outline
+          text-center
+          rounded-2xl
+          m-5
+          gap-2
+          sm:absolute
+          sm:right-0
+          float-right
+        "
+        @click="exitGame()"
+      >
+        <font-awesome-icon icon="fa-x" />
+      </button>
+    </div>
     <base-page>
       <div class="max-w-md">
         <div class="flex flex-col">
@@ -9,6 +29,18 @@
               {{ $route.params.gameId }}
             </h3>
           </div>
+          <button
+            v-if="isLeader"
+            :class="[
+              'btn btn-success text-center mx-5 my-3 gap-2',
+              players.length > 3 && 'animate-pulse'
+            ]"
+            :disabled="players.length < 3"
+            @click="startGame()"
+          >
+            <span>Start Game</span>
+            <font-awesome-icon icon="fa-right-from-bracket" />
+          </button>
           <card>
             <div class="form-control mb-3">
               <label class="input-group">
@@ -24,29 +56,7 @@
                 />
               </label>
             </div>
-            <div class="flex flex-col mt-5 grow">
-              <div class="flex">
-                <button
-                  :class="[
-                    'btn text-center mx-5 gap-2',
-                    ready ? 'btn-success' : 'btn-info btn-outline',
-                  ]"
-                  @click="playerReady()"
-                >
-                  <span>Ready to play</span>
-                  <font-awesome-icon v-if="ready" icon="fa-circle-check" />
-                  <font-awesome-icon v-else icon="fa-circle" />
-                </button>
-                <button
-                  class="btn text-center mx-5 btn-info btn-outline gap-2"
-                  @click="exitGame()"
-                >
-                  Exit Game
-                  <font-awesome-icon icon="fa-right-from-bracket" />
-                </button>
-              </div>
-              <player-list showReady />
-            </div>
+            <player-list showReady />
           </card>
         </div>
       </div>
@@ -59,11 +69,25 @@ import Card from "@/components/ui/Card.vue";
 import BasePage from "@/components/ui/BasePage.vue";
 import PlayerList from "@/components/PlayerList.vue";
 import VSwatches from "vue3-swatches";
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import store from "@/stores";
 
 export default {
   name: "GameLobby",
+
+  // beforeRouteLeave (to, from , next) {
+  //   // const answer = window.confirm('Do you really want to leave? you have unsaved changes!')
+  //   // if (answer) {
+  //   //   next()
+  //   // } else {
+  //   //   next(false)
+  //   // }
+  //   alert("EAVING")
+  // },
+
+  beforeUnmount() {
+    alert("UNMOUNTED")
+  },
 
   components: {
     PlayerList,
@@ -73,14 +97,24 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      players: (state) => state.lobby.players
+    }),
     ...mapGetters({
       swatches: "lobby/colorSwatches",
+      isLeader: "lobby/isLeader"
     }),
   },
 
   watch: {
-    color(newColor) {
-      this.$socket.emit("colors:update", newColor);
+    color(newColor, oldColor) {
+      console.log(newColor, oldColor, this.color)
+      // if the color is not disabled
+      if(this.swatches.find((s) => (s.color === newColor) && s.disabled)) {
+        this.color = oldColor;
+      } else {
+        this.$socket.emit("colors:update", newColor);
+      }
     },
   },
 
@@ -98,9 +132,10 @@ export default {
   },
 
   methods: {
-    playerReady() {
-      if (this.ready) return;
-      this.ready = true;
+    startGame() {
+      if (this.players.length > 3){
+        this.$socket.emit("game:start")        
+      }
     },
 
     exitGame() {
@@ -112,7 +147,7 @@ export default {
 
 <style>
 div.vue-swatches__swatch--is-disabled {
-  opacity: 20%;
+  opacity: 20% !important;
 }
 
 div.vue-swatches__swatch {

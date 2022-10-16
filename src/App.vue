@@ -7,19 +7,7 @@
       </template>
       <template v-slot:right>
         <div
-          class="
-            flex
-            items-center
-            gap-2
-            text-gray-900
-            hover:text-accent
-            hover:bg-gray-900
-            focus:text-accent
-            focus:bg-gray-900
-            p-1
-            px-3
-            rounded cursor-pointer
-          "
+          class="flex items-center gap-2 text-gray-900 hover:text-accent hover:bg-gray-900 focus:text-accent focus:bg-gray-900 p-1 px-3 rounded cursor-pointer"
         >
           <font-awesome-icon icon="fa-circle-question" />
           How to play
@@ -35,7 +23,7 @@
 </template>
 
 <script>
-import { FadeInOut } from 'vue3-transitions'
+import { FadeInOut } from "vue3-transitions";
 import { mapState } from "vuex";
 import { RouterView } from "vue-router";
 import Navigation from "@/components/ui/Navigation.vue";
@@ -47,7 +35,7 @@ export default {
   components: {
     Navigation,
     RouterView,
-    FadeInOut
+    FadeInOut,
   },
 
   beforeMount() {
@@ -56,18 +44,28 @@ export default {
   },
 
   watch: {
-    gameId(gameId) {
-      if(!!gameId){
-        this.$router.replace({ name: 'game-lobby', params: { gameId: gameId } })
+    gameCode(code) {
+      if (!!code) {
+        this.$router.replace({ name: "game-lobby", params: { gameId: code } });
       } else {
-        this.$router.replace({ name: 'home' })
+        this.$router.replace({ name: "home" });
+      }
+    },
+
+    inGame(inGame) {
+      if (inGame) {
+        this.$router.replace({
+          name: "game-play",
+          params: { gameId: this.gameCode },
+        });
       }
     },
   },
 
   computed: {
     ...mapState({
-      gameId: (state) => state.lobby.gameId,
+      gameCode: (state) => state.lobby.code,
+      inGame: (state) => state.game.inProgress,
     }),
   },
 

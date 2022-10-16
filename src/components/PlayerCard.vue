@@ -1,12 +1,12 @@
 <template>
   <div class="flex items-center space-x-3 py-1">
     <div>
-      <h3 class="font-bold">{{ id }}</h3>
+      <h3 class="font-bold">{{ order }}</h3>
     </div>
     <div class="avatar">
       <div
         class="mask mask-squircle w-6 h-6"
-        :style="{ 'background-color': color }"
+        :style="{ 'background-color': color || 'white' }"
       ></div>
     </div>
     <div>
@@ -24,32 +24,32 @@
 <script>
 export default {
   props: {
-    id: Number,
+    order: Number,
     name: String,
     color: String,
     selectable: {
       type: Boolean,
-      default: false
+      default: false,
     },
     selected: {
       type: Boolean,
-      default: false
+      default: false,
     },
     showTurn: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isTurn: {
       type: Boolean,
-      default: false
+      default: false,
     },
     showReady: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isReady: {
       type: Boolean,
-      default: false
+      default: false,
     },
   },
 };

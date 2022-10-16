@@ -14,9 +14,7 @@
     </div>
     <div class="form-control w-full">
       <!-- name input -->
-      <label class="label text-xs">
-        Player Name
-      </label>
+      <label class="label text-xs"> Player Name </label>
       <input
         type="text"
         v-model="name"
@@ -28,7 +26,7 @@
 
     <div class="form-control mb-5">
       <label class="label cursor-pointer">
-        <span class="label-text">Spectator</span> 
+        <span class="label-text">Spectator</span>
         <input v-model="spectator" type="checkbox" class="checkbox" />
       </label>
     </div>
@@ -65,9 +63,12 @@ export default {
   },
 
   sockets: {
-
     "success:lobby_found"(gameId) {
-      this.$socket.emit("lobby:join", gameId);
+      this.$socket.emit("lobby:join", {
+        lobby: gameId,
+        playerName: this.name,
+        isSpectator: this.spectator,
+      });
     },
 
     "error:lobby_found"(errorMsg) {
@@ -81,16 +82,13 @@ export default {
       this.loading = false;
       this.$emit("error", `Error: ${errorMsg}`);
     },
-
   },
 
   methods: {
-
     findLobby() {
-      this.loading = true
-      this.$socket.emit("lobby:find", this.gameId)
+      this.loading = true;
+      this.$socket.emit("lobby:find", this.gameId);
     },
-
   },
 };
 </script>

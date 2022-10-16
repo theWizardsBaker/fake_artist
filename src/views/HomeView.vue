@@ -9,16 +9,16 @@
         <card>
           <div class="flex flex-col w-full border-opacity-50">
             <div class="tabs pb-5">
-              <a 
+              <a
                 v-for="(form, formInd) in gameForms"
                 :class="[
                   'tab tab-bordered tab-lg flex-1',
-                  (formInd === formToShow) && 'tab-active'
+                  formInd === formToShow && 'tab-active',
                 ]"
                 @click="setTab(formInd)"
               >
-                {{form}}
-              </a> 
+                {{ form }}
+              </a>
             </div>
             <alert alertLevel="error" v-show="error.show">
               <template v-slot:content>
@@ -26,16 +26,10 @@
               </template>
             </alert>
             <div class="p-3">
-                <!-- join form -->
-                <game-join
-                  v-if="formToShow === 0"
-                  @error="handleError"
-                />
-                <!-- create form -->
-                <game-create
-                  v-if="formToShow === 1"
-                  @error="handleError"
-                />
+              <!-- join form -->
+              <game-join v-if="formToShow === 0" @error="handleError" />
+              <!-- create form -->
+              <game-create v-if="formToShow === 1" @error="handleError" />
             </div>
           </div>
         </card>
@@ -52,30 +46,28 @@ import BasePage from "@/components/ui/BasePage.vue";
 import Card from "@/components/ui/Card.vue";
 
 export default {
-
   name: "HomePage",
-  
-  components: { 
+
+  components: {
     GameJoin,
     GameCreate,
     Alert,
     BasePage,
-    Card
+    Card,
   },
-  
+
   data() {
     return {
       formToShow: 0,
-      gameForms: ['Join Game', 'Create Game'],
+      gameForms: ["Join Game", "Create Game"],
       error: {
         message: "",
-        show: false
-      }
-    }
+        show: false,
+      },
+    };
   },
-  
-  methods: {
 
+  methods: {
     handleError(msg) {
       // possible errors:
       /* game in progress, gamedoes not exist, could not join, could not create, general error */
@@ -87,7 +79,6 @@ export default {
       this.error.show = false;
       this.formToShow = index;
     },
-
   },
 };
 </script>

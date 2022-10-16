@@ -14,7 +14,7 @@ import {
   faTriangleExclamation,
   faCircleInfo,
   faCircleCheck,
-  faRightFromBracket
+  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faUser);

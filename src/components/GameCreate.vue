@@ -18,9 +18,7 @@
 
     <div class="form-control w-full">
       <!-- name input -->
-      <label class="label text-xs">
-        Player Name
-      </label>
+      <label class="label text-xs"> Player Name </label>
       <input
         type="text"
         v-model="name"
@@ -32,7 +30,7 @@
 
     <div class="form-control mb-5">
       <label class="label cursor-pointer">
-        <span class="label-text">Spectator</span> 
+        <span class="label-text">Spectator</span>
         <input v-model="spectator" type="checkbox" class="checkbox" />
       </label>
     </div>
@@ -67,18 +65,17 @@ export default {
       turnTimeLimit: 0,
       timeLimits: ["15", "30", "60"],
       spectator: false,
-      name: ""
+      name: "",
     };
   },
 
   sockets: {
-    
     "success:lobby_created"(gameId) {
-      this.$socket.emit("lobby:join", { 
+      this.$socket.emit("lobby:join", {
         lobby: gameId,
         playerName: this.name,
         isSpectator: this.spectator,
-      })
+      });
     },
 
     "error:lobby_created"(response) {
@@ -91,20 +88,17 @@ export default {
       this.loading = false;
       this.$emit("error", `Unable to create game`);
     },
-
   },
-  
-  methods: {
 
+  methods: {
     createNewGame() {
       const timeLimit =
         this.turnTimeLimit > this.timeLimits.length
           ? this.timeLimits[this.turnTimeLimit]
-          : null
-      this.loading = true
-      this.$socket.emit("lobby:create", timeLimit)
+          : null;
+      this.loading = true;
+      this.$socket.emit("lobby:create", timeLimit);
     },
-
   },
 };
 </script>

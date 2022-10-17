@@ -10,7 +10,7 @@
           v-bind="player"
           :order="playerInd + 1"
           :key="player._id"
-          showReady 
+          showReady
         />
       </li>
     </ul>

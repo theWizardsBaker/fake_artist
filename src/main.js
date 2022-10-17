@@ -27,6 +27,9 @@ app.use(
       withCredentials: true,
       rejectUnauthorized: false,
     }),
+    params: {
+      type: ["websocket"],
+    },
     vuex: {
       store,
       actionPrefix: "SOCKET_",

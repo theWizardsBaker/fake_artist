@@ -13,7 +13,6 @@ export default {
   }),
 
   getters: {
-    
     colorSwatches(state) {
       const playerColors = state.players.map((p) => p.color);
       return state.swatches.map((s) => {
@@ -27,10 +26,12 @@ export default {
     },
 
     isLeader(state, getters) {
-      if(!getters.player) { return false }
-      const minTurnOrder = Math.min(...state.players.map(p => p.order));
+      if (!getters.player) {
+        return false;
+      }
+      const minTurnOrder = Math.min(...state.players.map((p) => p.order));
       return minTurnOrder === getters.player.order;
-    }
+    },
   },
 
   mutations: {
@@ -67,10 +68,7 @@ export default {
   },
 
   actions: {
-    "SOCKET_success:lobby_joined"(
-      { commit },
-      { gameLobby, playerId }
-    ) {
+    "SOCKET_success:lobby_joined"({ commit }, { gameLobby, playerId }) {
       commit("updateGameCode", gameLobby.room);
       commit("setPlayers", gameLobby.players);
       commit("updateSwatches", gameLobby.colors);

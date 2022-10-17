@@ -15,7 +15,7 @@ import {
   faCircleInfo,
   faCircleCheck,
   faRightFromBracket,
-  faX
+  faX,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faUser);

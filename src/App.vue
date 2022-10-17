@@ -45,7 +45,7 @@ export default {
 
   watch: {
     gameCode(code) {
-      console.log("CODE UPDATED", code)
+      console.log("CODE UPDATED", code);
       if (!!code) {
         this.$router.push({ name: "game-lobby", params: { gameId: code } });
       } else {

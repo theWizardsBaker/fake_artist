@@ -3,18 +3,13 @@ export default {
 
   namespaced: true,
 
-    state: () => ({
-      inProgress: false
-    }),
+  state: () => ({
+    inProgress: false,
+  }),
 
-  mutations: {
-    
-  },
+  mutations: {},
 
   actions: {
-
-    "SOCKET_success:start_game"({ commit }){
-
-    }
-  }
+    "SOCKET_success:start_game"({ commit }) {},
+  },
 };

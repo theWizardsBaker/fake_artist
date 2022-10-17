@@ -23,6 +23,10 @@ export default {
       return state.players.find((p) => p._id === state.playerId);
     },
 
+    orderedPlayers(state) {
+      return state.players.sort((p1, p2) => p1.order - p2.order);
+    },
+
     isLeader(state, getters) {
       if (!getters.player) {
         return false;
@@ -41,6 +45,10 @@ export default {
       state.players = state.players.map((p) => {
         return p._id === player._id ? player : p;
       });
+    },
+
+    updatePlayers(state, players) {
+      state.players = players;
     },
 
     updateSwatches(state, swatches) {
@@ -87,6 +95,10 @@ export default {
 
     "SOCKET_success:player_updated"({ commit }, player) {
       commit("updatePlayer", player);
+    },
+
+    "SOCKET_success:players_updated"({ commit }, players) {
+      commit("updatePlayers", players);
     },
 
     "SOCKET_success:colors_updated"({ commit }, player) {

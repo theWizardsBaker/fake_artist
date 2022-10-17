@@ -69,10 +69,16 @@ import store from "@/stores";
 export default {
   name: "GameLobby",
 
+  created() {
+    // end an old game if one existed
+    store.dispatch("game/endGame");
+  },
+
   beforeUnmount() {
     // if the player navigates away from the page
     // send an 'exit' signal
     if (!this.gameInProgress) {
+      alert("GONE");
       this.exitGame();
     }
   },

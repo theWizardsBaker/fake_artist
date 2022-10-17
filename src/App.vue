@@ -15,9 +15,11 @@
       </template>
     </navigation>
     <router-view v-slot="{ Component, route }">
-      <FadeInOut :appear="true" entry="center" exit="center" :duration="500">
-        <component :is="Component" />
-      </FadeInOut>
+      <!--       <FadeInOut :appear="true" entry="center" exit="center" :duration="500">
+ -->
+      <component :is="Component" />
+      <!--       </FadeInOut>
+ -->
     </router-view>
   </div>
 </template>
@@ -38,6 +40,11 @@ export default {
     FadeInOut,
   },
 
+  created() {
+    // check and see if a game is in progress
+    this.$socket.emit("lobby:rejoin", this.gameCode);
+  },
+
   beforeMount() {
     // find if we already have an existing game
     // this.$socket.emit("game:find", "12345");
@@ -45,20 +52,16 @@ export default {
 
   watch: {
     gameCode(code) {
-      console.log("CODE UPDATED", code);
       if (!!code) {
-        this.$router.push({ name: "game-lobby", params: { gameId: code } });
+        this.goToLobby();
       } else {
-        this.$router.replace({ name: "home" });
+        this.goHome();
       }
     },
 
     inGame(inGame) {
       if (inGame) {
-        this.$router.replace({
-          name: "game-play",
-          params: { gameId: this.gameCode },
-        });
+        this.goToGame();
       }
     },
   },
@@ -71,9 +74,37 @@ export default {
   },
 
   sockets: {
-    // gameFound() {
-    //   alert("GAME FOUND!");
-    // },
+    "success:lobby_rejoin_game"() {
+      this.goToGame();
+    },
+
+    "success:lobby_rejoin_lobby"() {
+      this.goToLobby();
+    },
+
+    "error:lobby_rejoin"() {
+      this.goHome();
+    },
+  },
+
+  methods: {
+    goToGame() {
+      this.$router.replace({
+        name: "game-play",
+        params: { gameId: this.gameCode },
+      });
+    },
+
+    goToLobby() {
+      this.$router.push({
+        name: "game-lobby",
+        params: { gameId: this.gameCode },
+      });
+    },
+
+    goHome() {
+      this.$router.replace({ name: "home" });
+    },
   },
 };
 </script>

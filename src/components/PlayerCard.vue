@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center space-x-3 py-1">
     <div>
-      <h3 class="font-bold">{{ order }}</h3>
+      <h3 class="font-bold">{{ order + 1 }}</h3>
     </div>
     <div class="avatar">
       <div
@@ -15,13 +15,18 @@
     <div v-if="selectable">
       <input type="checkbox" />
     </div>
-    <div class="flex-auto text-right" v-if="showReady">
-      <div class="badge badge-success rounded-md" v-show="isReady">Ready</div>
+    <div class="flex-auto text-right" v-if="showTurn">
+      <button class="btn btn-xs btn-primary gap-2" v-show="isTurn">
+        Artist
+        <font-awesome-icon icon="fa-paintbrush" />
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapState } from "vuex";
+
 export default {
   props: {
     order: Number,
@@ -39,17 +44,23 @@ export default {
       type: Boolean,
       default: false,
     },
-    isTurn: {
-      type: Boolean,
-      default: false,
-    },
-    showReady: {
+    showTurn: {
       type: Boolean,
       default: false,
     },
     isReady: {
       type: Boolean,
       default: false,
+    },
+  },
+
+  computed: {
+    ...mapState({
+      playerTurn: (state) => state.game.playerTurn,
+    }),
+
+    isTurn() {
+      return this.order === this.playerTurn;
     },
   },
 };

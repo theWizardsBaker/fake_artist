@@ -42,6 +42,7 @@
           ref="VueCanvasDrawing"
           :lock="canvasLocked"
           :lineWidth="lineWidth"
+          :color="color"
           lineCap="round"
           lineJoin="round"
           @mouseup="hasMarked = true"
@@ -76,6 +77,16 @@ export default {
       type: String,
       default: "25",
     },
+
+    isTurn: {
+      type: Boolean,
+      default: false,
+    },
+
+    color: {
+      type: String,
+      default: "#000000",
+    },
   },
 
   computed: {
@@ -84,7 +95,7 @@ export default {
     },
 
     canvasLocked() {
-      return this.hasMarked || this.lockCanvas;
+      return !this.isTurn || this.hasMarked || this.lockCanvas;
     },
   },
 

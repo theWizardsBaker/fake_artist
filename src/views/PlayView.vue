@@ -6,8 +6,14 @@
     </div>
     <div class="flex justify-center">
       <div class="flex flex-col lg:flex-row">
-        <div class="flex-initial hidden md:block">
-          <player-list />
+        <div class="flex-initial hidden md:block place-self-center">
+          <player-list showTurn />
+          <button
+            class="btn btn-info btn-outline btn-wide text-center rounded-2xl m-5 gap-2"
+            @click="backToHome()"
+          >
+            Quit Game <font-awesome-icon icon="fa-x" />
+          </button>
         </div>
         <div
           class="flex-auto"
@@ -15,10 +21,20 @@
           ref="canvas"
           :style="{ width: width, height: width }"
         >
-          <drawing-canvas :canvasSize="canvasSize" />
+          <drawing-canvas
+            :canvasSize="canvasSize"
+            :isTurn="isTurn"
+            :color="player.color"
+          />
         </div>
-        <div class="flex-auto" v-show="selectedDisplay === 1">
-          <player-list />
+        <div class="flex-auto place-self-center" v-show="selectedDisplay === 1">
+          <player-list showTurn />
+          <button
+            class="btn btn-info btn-outline btn-wide text-center rounded-2xl m-5 gap-2"
+            @click="backToHome()"
+          >
+            Quit Game <font-awesome-icon icon="fa-x" />
+          </button>
         </div>
       </div>
     </div>
@@ -41,6 +57,8 @@
 import PlayerList from "@/components/PlayerList.vue";
 import GameTopic from "@/components/GameTopic.vue";
 import DrawingCanvas from "@/components/DrawingCanvas.vue";
+import { mapGetters, mapState } from "vuex";
+import store from "@/stores";
 
 export default {
   components: {
@@ -58,6 +76,10 @@ export default {
   //   // }
   //   alert("EAVING")
   // },
+  created() {
+    // get turn
+    this.$socket.emit("game:get_turn");
+  },
 
   mounted() {
     window.addEventListener("resize", this.getWindowDimensions);
@@ -68,6 +90,21 @@ export default {
 
   unmounted() {
     window.removeEventListener("resize", this.getWindowDimensions);
+  },
+
+  computed: {
+    ...mapState({
+      playerTurn: (state) => state.game.playerTurn,
+    }),
+
+    ...mapGetters({
+      player: "lobby/player",
+      players: "lobby/orderedPlayers",
+    }),
+
+    isTurn() {
+      return this.player.order === this.playerTurn;
+    },
   },
 
   watch: {

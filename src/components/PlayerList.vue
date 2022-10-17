@@ -1,16 +1,16 @@
 <template>
   <div class="pt-5">
     <h3 class="text-center font-bold">Players</h3>
-    <ul class="bg-secondary rounded-lg text-gray-900 m-4">
+    <ul class="bg-secondary rounded-lg text-gray-900 m-2 my-4">
       <li
         class="px-6 py-2 w-full rounded-t-lg border-b border-gray-600 last:border-b-0"
         v-for="(player, playerInd) in players"
       >
         <player-card
           v-bind="player"
-          :order="playerInd + 1"
+          :order="playerInd"
           :key="player._id"
-          showReady
+          :showTurn="showTurn"
         />
       </li>
     </ul>
@@ -18,13 +18,13 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 import store from "@/stores";
 import PlayerCard from "@/components/PlayerCard.vue";
 
 export default {
   props: {
-    showReady: {
+    showTurn: {
       type: Boolean,
       default: false,
     },
@@ -40,10 +40,8 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      players: (state) => {
-        return state.lobby.players.sort((p1, p2) => p1.order - p2.order);
-      },
+    ...mapGetters({
+      players: "lobby/orderedPlayers",
     }),
   },
 

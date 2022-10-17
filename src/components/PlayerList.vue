@@ -42,7 +42,7 @@ export default {
   computed: {
     ...mapState({
       players: (state) => {
-        return state.lobby.players.sort((p1, p2) => p1.order < p2.order);
+        return state.lobby.players.sort((p1, p2) => p1.order - p2.order);
       },
     }),
   },

@@ -49,6 +49,16 @@ export default {
     DrawingCanvas,
   },
 
+  // beforeRouteLeave (to, from , next) {
+  //   // const answer = window.confirm('Do you really want to leave? you have unsaved changes!')
+  //   // if (answer) {
+  //   //   next()
+  //   // } else {
+  //   //   next(false)
+  //   // }
+  //   alert("EAVING")
+  // },
+
   mounted() {
     window.addEventListener("resize", this.getWindowDimensions);
     this.$nextTick(() => {

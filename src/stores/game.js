@@ -7,9 +7,15 @@ export default {
     inProgress: false,
   }),
 
-  mutations: {},
+  mutations: {
+    startGame(state) {
+      state.inProgress = true;
+    },
+  },
 
   actions: {
-    "SOCKET_success:start_game"({ commit }) {},
+    "SOCKET_success:game_started"({ commit }) {
+      commit("startGame");
+    },
   },
 };

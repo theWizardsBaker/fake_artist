@@ -5,14 +5,6 @@
     >
       Animal: Dog
     </h1>
-    <div class="flex gap-5">
-      <button class="btn btn-circle btn-outline btn-info">
-        <font-awesome-icon icon="fa-thumbs-up" class="fa-2xl" />
-      </button>
-      <button class="btn btn-circle btn-outline btn-error">
-        <font-awesome-icon icon="fa-thumbs-down" class="fa-2xl" />
-      </button>
-    </div>
   </div>
 </template>
 

@@ -1,5 +1,3 @@
-import { getTransitionRawChildren } from "vue";
-
 export default {
   id: "lobby",
 
@@ -87,11 +85,11 @@ export default {
       commit("addPlayer", player);
     },
 
-    "SOCKET_success:colors_updated"({ commit }, player) {
+    "SOCKET_success:player_updated"({ commit }, player) {
       commit("updatePlayer", player);
     },
 
-    "SOCKET_success:player_updated"({ commit }, player) {
+    "SOCKET_success:colors_updated"({ commit }, player) {
       commit("updatePlayer", player);
     },
 

@@ -123,7 +123,7 @@ export default {
 
   methods: {
     startGame() {
-      if (this.players.length > this.minPlayers) {
+      if (this.players.length >= this.minPlayers) {
         this.$socket.emit("game:start");
       }
     },

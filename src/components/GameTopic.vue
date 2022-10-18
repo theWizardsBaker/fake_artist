@@ -12,10 +12,10 @@
 import { mapState } from "vuex";
 
 export default {
-  created() {
-    this.$socket.emit("game:get_topic", this.playerId);
+  mounted() {
+    // get topic
+    this.$socket.emit("game:get_topic");
   },
-
   computed: {
     ...mapState({
       playerId: (state) => state.lobby.playerId,

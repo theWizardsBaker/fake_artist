@@ -29,7 +29,6 @@ import { FadeInOut } from "vue3-transitions";
 import { mapState } from "vuex";
 import { RouterView } from "vue-router";
 import Navigation from "@/components/ui/Navigation.vue";
-import store from "@/stores";
 
 export default {
   name: "Fake Artist",
@@ -75,11 +74,15 @@ export default {
 
   sockets: {
     "success:lobby_rejoin_game"() {
-      this.goToGame();
+      if(this.$router.name !== "game-play"){
+        this.goToGame();
+      }
     },
 
     "success:lobby_rejoin_lobby"() {
-      this.goToLobby();
+      if(this.$router.name !== "game-lobby"){
+        this.goToLobby();
+      }
     },
 
     "error:lobby_rejoin"() {

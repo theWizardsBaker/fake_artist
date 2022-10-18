@@ -4,8 +4,12 @@ export default {
   namespaced: true,
 
   state: () => ({
+    timeLimit: 0,
     inProgress: false,
+    playerCount: 0,
     playerTurn: 0,
+    round: 0,
+    maxRounds: 0,
     topic: {
       category: "",
       subject: "",
@@ -19,26 +23,58 @@ export default {
     endGame(state) {
       state.inProgress = false;
     },
+    setTimeLimit(state, timeLimit) {
+      state.timeLimit = timeLimit;
+    },
+    setRound(state, round) {
+      state.round = round;
+    },
+    setMaxRounds(state, maxRounds) {
+      state.maxRounds = maxRounds;
+    },
     setTurn(state, turn) {
       state.playerTurn = turn;
+    },
+    setPlayerCount(state, turns) {
+      state.playerCount = turns;
     },
     setTopic(state, { category, subject }) {
       state.topic.category = category;
       state.topic.subject = subject;
     },
+    incrementPlayerTurn(state) {
+      if(state.playerTurn + 1 >= state.playerCount) {
+        state.playerTurn = 0;
+        state.round += 1;
+      } else {
+        state.playerTurn += 1;
+      }
+    }
   },
 
   actions: {
-    "SOCKET_success:game_started"({ commit }) {
+    "SOCKET_success:game_started"({ commit }, { players, timeLimit, maxRounds }) {
+      commit("setPlayerCount", players)
+      commit("setTimeLimit", timeLimit)
+      commit("setMaxRounds", maxRounds)
       commit("startGame");
+    },
+
+    "SOCKET_success:lobby_rejoin_game"({ commit }, { turnNumber, roundNumber }) {
+      commit("setTurn", turnNumber);
+      commit("setRound", roundNumber);
+    },
+
+    "SOCKET_success:game_topic"({ commit }, topic) {
+      commit("setTopic", topic)
     },
 
     "SOCKET_success:game_turn"({ commit }, turn) {
       commit("setTurn", turn);
     },
 
-    "SOCKET_success:game_topic"({ commit }, topic) {
-      commit("setTopic", topic);
+    "SOCKET_success:set_drawing"({ commit }) {
+      commit("incrementPlayerTurn");
     },
 
     "SOCKET_success:lobby_quit"({ commit }) {

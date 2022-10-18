@@ -15,14 +15,22 @@
           </div>
         </div>
 
-        <button class="btn gap-3" @click.prevent="undoDrawing()">
+        <button
+          class="btn gap-3"
+          @click.prevent="undoDrawing()"
+          :disabled="!hasMarked || !isTurn"
+        >
           <font-awesome-icon icon="fa-eraser" class="fa-2xl" />
           <span class="pt-2">Undo</span>
         </button>
 
         <button
-          class="btn btn-success sm:btn-wide gap-3 sm:ml-auto sm:flex-grow-0"
-          :disabled="!hasMarked"
+          :class="[
+            'btn btn-success sm:btn-wide gap-3 sm:ml-auto sm:flex-grow-0',
+            submitting && 'loading'
+          ]"
+          :disabled="!hasMarked || !isTurn || submitting"
+          @click="submitDrawing"
         >
           <font-awesome-icon icon="fa-floppy-disk" class="fa-2xl" />
           <span class="pt-2">Save</span>
@@ -47,6 +55,7 @@
           lineJoin="round"
           @mouseup="hasMarked = true"
           @touchend="hasMarked = true"
+          :initialImage="initialImage"
         />
       </div>
     </div>
@@ -56,13 +65,14 @@
 <script>
 import { debounce } from "debounce";
 import VueDrawingCanvas from "vue-drawing-canvas";
+import { mapState } from "vuex";
 
 export default {
   components: {
     VueDrawingCanvas,
   },
 
-  mounted() {
+  created() {
     // get existing drawing from the backend
     // this.initialImage =
   },
@@ -90,6 +100,11 @@ export default {
   },
 
   computed: {
+
+    ...mapState({
+      playerId: (state) => state.lobby.playerId,
+    }),
+
     lineWidth() {
       return this.brushSizes[this.selectedBrush];
     },
@@ -115,7 +130,16 @@ export default {
       selectedBrush: 0,
       brushSizes: [3, 5, 7],
       size: 0,
+      submitting: false,
+      initialImage: []
     };
+  },
+
+  sockets: {
+    'SOCKET_success:set_drawing'(path) {
+      console.log(path)
+      this.initialImage.push(path)
+    }
   },
 
   methods: {
@@ -135,6 +159,14 @@ export default {
       this.size = size - 40;
       this.isRedrawingCanvasSize = false;
     }, 1000),
+
+    submitDrawing() {
+      this.submitting = true;
+      let lastStroke = this.$refs.VueCanvasDrawing.getAllStrokes();
+      // tag the player who drew the stroke
+      lastStroke.player = this.playerId;
+      this.$socket.emit("game:set_drawing", JSON.stringify(lastStroke));
+    }
   },
 };
 </script>

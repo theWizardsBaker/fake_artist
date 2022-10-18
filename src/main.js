@@ -22,11 +22,7 @@ app.use(store);
 
 app.use(
   new VueSocketIO({
-    debug: true,
-    connection: SocketIO(import.meta.env.VITE_BACKEND_URL, {
-      withCredentials: true,
-      rejectUnauthorized: false,
-    }),
+    connection: SocketIO(import.meta.env.VITE_BACKEND_URL),
     params: {
       type: ["websocket"],
     },

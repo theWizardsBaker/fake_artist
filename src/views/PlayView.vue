@@ -12,7 +12,7 @@
             class="btn btn-info btn-outline btn-wide text-center rounded-2xl m-5 gap-2"
             @click="backToHome()"
           >
-            Quit Game <font-awesome-icon icon="fa-x" />
+            End Game <font-awesome-icon icon="fa-x" />
           </button>
         </div>
         <div
@@ -33,7 +33,7 @@
             class="btn btn-info btn-outline btn-wide text-center rounded-2xl m-5 gap-2"
             @click="backToHome()"
           >
-            Quit Game <font-awesome-icon icon="fa-x" />
+            End Game <font-awesome-icon icon="fa-x" />
           </button>
         </div>
       </div>
@@ -58,7 +58,6 @@ import PlayerList from "@/components/PlayerList.vue";
 import GameTopic from "@/components/GameTopic.vue";
 import DrawingCanvas from "@/components/DrawingCanvas.vue";
 import { mapGetters, mapState } from "vuex";
-import store from "@/stores";
 
 export default {
   components: {

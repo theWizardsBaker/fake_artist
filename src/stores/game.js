@@ -6,6 +6,10 @@ export default {
   state: () => ({
     inProgress: false,
     playerTurn: 0,
+    topic: {
+      category: "",
+      subject: "",
+    },
   }),
 
   mutations: {
@@ -18,6 +22,10 @@ export default {
     setTurn(state, turn) {
       state.playerTurn = turn;
     },
+    setTopic(state, { category, subject }) {
+      state.topic.category = category;
+      state.topic.subject = subject;
+    },
   },
 
   actions: {
@@ -27,6 +35,10 @@ export default {
 
     "SOCKET_success:game_turn"({ commit }, turn) {
       commit("setTurn", turn);
+    },
+
+    "SOCKET_success:game_topic"({ commit }, topic) {
+      commit("setTopic", topic);
     },
 
     "SOCKET_success:lobby_quit"({ commit }) {

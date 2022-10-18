@@ -135,6 +135,10 @@ export default {
       const digitRegex = /\d+/;
       this.canvasSize = digitRegex.exec(containerWidthStr)[0];
     },
+
+    backToHome() {
+      this.$router.replace({ name: "home" });
+    },
   },
 };
 </script>

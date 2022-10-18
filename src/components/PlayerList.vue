@@ -19,7 +19,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-import store from "@/stores";
 import PlayerCard from "@/components/PlayerCard.vue";
 
 export default {

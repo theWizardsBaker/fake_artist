@@ -1,41 +1,13 @@
 <template>
   <div class="p-2 sm:p-5">
     <div class="flex flex-col gap-5">
-      <div class="flex justify-center flex-wrap gap-5">
-        <div class="btn-group rounded-2xl">
-          <div
-            v-for="(brush, brushInd) in brushSizes"
-            :class="['btn', selectedBrush === brushInd && 'btn-active']"
-            @click="selectedBrush = brushInd"
-          >
-            <font-awesome-icon
-              icon="fa-circle"
-              :class="brushIconSize(brushInd)"
-            />
-          </div>
-        </div>
-
-        <button
-          class="btn gap-3"
-          @click.prevent="undoDrawing()"
-          :disabled="!hasMarked || !isTurn"
-        >
-          <font-awesome-icon icon="fa-eraser" class="fa-2xl" />
-          <span class="pt-2">Undo</span>
-        </button>
-
-        <button
-          :class="[
-            'btn btn-success sm:btn-wide gap-3 sm:ml-auto sm:flex-grow-0',
-            submitting && 'loading',
-          ]"
-          :disabled="!hasMarked || !isTurn"
-          @click="submitDrawing"
-        >
-          <font-awesome-icon icon="fa-floppy-disk" class="fa-2xl" />
-          <span class="pt-2">Save</span>
-        </button>
-      </div>
+      <drawing-canvas-buttons
+        :disabled="!hasMarked || !isTurn"
+        :loading="submitting"
+        @submit="submitDrawing"
+        @undo="undoDrawing"
+        @brushSize="brushSize"
+      />
       <div class="flex justify-center items-center">
         <button
           v-if="isRedrawingCanvasSize"
@@ -64,6 +36,7 @@
 </template>
 
 <script>
+import DrawingCanvasButtons from "./DrawingCanvasButtons.vue";
 import { debounce } from "debounce";
 import VueDrawingCanvas from "vue-drawing-canvas";
 import { mapState } from "vuex";
@@ -71,11 +44,22 @@ import { mapState } from "vuex";
 export default {
   components: {
     VueDrawingCanvas,
+    DrawingCanvasButtons
   },
 
   created() {
     // get existing drawing from the backend
     // this.paths =
+
+    this.focused = window.document.hasFocus();
+
+    window.addEventListener('blur', this.isUnfocused);
+    window.addEventListener('focus',this.isFocused);
+  },
+
+  destroyed() {
+    window.removeEventListener('blur', this.isUnfocused);
+    window.removeEventListener('focus',this.isFocused);
   },
 
   props: {
@@ -106,10 +90,6 @@ export default {
       turn: (state) => state.game.playerTurn,
     }),
 
-    lineWidth() {
-      return this.brushSizes[this.selectedBrush];
-    },
-
     canvasLocked() {
       return !this.isTurn || this.hasMarked || this.lockCanvas;
     },
@@ -122,19 +102,19 @@ export default {
   watch: {
     canvasSize(newVal, oldVal) {
       if (newVal !== oldVal) {
+        if(this.$refs.VueCanvasDrawing) {
+          this.paths = this.$refs.VueCanvasDrawing.getAllStrokes()
+        }
         this.isRedrawingCanvasSize = true;
         this.resizeCanvas(newVal);
       }
     },
     isRedrawingCanvasSize(newVal) {
-      const round = (num) => +(Math.round(num + "e+2") + "e-2");
-
       if (newVal === false) {
         this.$nextTick(async () => {
           let c = document.getElementById(this.$refs.VueCanvasDrawing.canvasId);
           let d = c.getContext("2d");
           let scale = this.size / this.baseSize;
-          // console.log(round(scale), this.baseSize, this.size)
           d.scale(1, 1);
         });
       }
@@ -143,30 +123,22 @@ export default {
 
   data() {
     return {
+      focused: false,
       canvasConversionWorker: new Worker("/workers/transform_coordinates.js"),
       isRedrawingCanvasSize: true,
       hasMarked: false,
-      selectedBrush: 0,
-      brushSizes: [3, 5, 7],
       canvasSizes: [600, 400, 300, 200],
       size: 0,
       submitting: false,
       paths: [],
+      lineWidth: 0
     };
   },
 
   sockets: {
     async "success:set_drawing"(stroke) {
-      if (this.htmlCanvasSize !== this.canvasSizes[0]) {
-        const convertedValues = await this.convertDrawing(
-          this.htmlCanvasSize,
-          this.canvasSizes[0],
-          stroke
-        );
-        stroke.from = convertedValues.from;
-        stroke.coordinates = convertedValues.coordinates;
-      }
-      this.paths.push(stroke);
+      const convertedStroke = await this.convertStrokes([stroke], false);
+      this.paths.push(convertedStroke[0]);
       this.submitting = false;
       this.hasMarked = false;
       // await this.$refs.VueCanvasDrawing.redraw();
@@ -179,12 +151,20 @@ export default {
   },
 
   methods: {
+    isUnfocused() {
+      this.focused = false;
+    },
+
+    isFocused() {
+      this.focused = true;
+    },
+
     setMark() {
       this.hasMarked = true;
     },
 
-    brushIconSize(size) {
-      return ["", "fa-xl", "fa-2xl"][size];
+    brushSize(size) {
+      this.lineWidth = size;
     },
 
     undoDrawing() {
@@ -205,7 +185,11 @@ export default {
         this.size = i;
         break;
       }
+
       this.isRedrawingCanvasSize = false;
+
+      // re-get strokes from the server
+
     }, 1000),
 
     async submitDrawing() {
@@ -213,25 +197,39 @@ export default {
       await this.$nextTick();
 
       let lastStroke = this.$refs.VueCanvasDrawing.getAllStrokes().pop();
-      // convert to general canvas size
-      if (this.htmlCanvasSize !== this.canvasSizes[0]) {
-        const convertedValues = await this.convertDrawing(
-          this.canvasSizes[0],
-          this.htmlCanvasSize,
-          lastStroke
-        );
-        lastStroke.from = convertedValues.from;
-        lastStroke.coordinates = convertedValues.coordinates;
-      }
-      // tag the player who drew the stroke
-      lastStroke.player = this.playerId;
+      let convertedStrokes = await this.convertStrokes([lastStroke]);
+      convertedStrokes[0].player = this.playerId;
       // send to other users
-      this.$socket.emit("game:set_drawing", lastStroke);
+      this.$socket.emit("game:set_drawing", convertedStrokes[0]);
 
       // let lastStroke = this.$refs.VueCanvasDrawing.strokes;
     },
 
-    convertDrawing(baseSize, currentSize, { from, coordinates }) {
+    convertStrokes(strokes, enlarge = true) {
+      // enlarge or reduce
+      const start = enlarge ? this.canvasSizes[0] : this.htmlCanvasSize;
+      const end = enlarge ? this.htmlCanvasSize : this.canvasSizes[0];
+      return new Promise((resolve, reject) => {
+
+        if (this.htmlCanvasSize !== this.canvasSizes[0]) {
+          const convertedStrokes = strokes.map(async (s) => {
+            const convertedValues = await this.convertPoints( start, end, s);
+            s.from = convertedValues.from;
+            s.coordinates = convertedValues.coordinates;
+            return s;
+          })
+          // wait for all the conversions to be done
+          Promise.all(convertedStrokes).then((data) => {
+            resolve(data);
+          });
+        } else {
+          resolve(strokes);
+        }
+
+      })
+    },
+
+    convertPoints(baseSize, currentSize, { from, coordinates }) {
       return new Promise((resolve, reject) => {
         const webWorker = new Worker("/workers/transform_coordinates.js");
 

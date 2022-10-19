@@ -37,7 +37,6 @@
         </button>
       </div>
       <div class="flex justify-center items-center">
-
         <button
           v-if="isRedrawingCanvasSize"
           class="loading btn btn-outline btn-xl mt-10"
@@ -47,8 +46,8 @@
         <vue-drawing-canvas
           v-else
           ref="VueCanvasDrawing"
-          :height="size"
-          :width="size"
+          :height="htmlCanvasSize"
+          :width="htmlCanvasSize"
           :lock="canvasLocked"
           :lineWidth="lineWidth"
           :color="color"
@@ -114,6 +113,10 @@ export default {
     canvasLocked() {
       return !this.isTurn || this.hasMarked || this.lockCanvas;
     },
+
+    htmlCanvasSize() {
+      return this.canvasSizes[this.size];
+    },
   },
 
   watch: {
@@ -124,22 +127,28 @@ export default {
       }
     },
     isRedrawingCanvasSize(newVal) {
-      if(newVal === false) {      
+      const round = (num) => +(Math.round(num + "e+2") + "e-2");
+
+      if (newVal === false) {
         this.$nextTick(async () => {
           let c = document.getElementById(this.$refs.VueCanvasDrawing.canvasId);
           let d = c.getContext("2d");
-          console.log(d.scale(.5, .5));
+          let scale = this.size / this.baseSize;
+          // console.log(round(scale), this.baseSize, this.size)
+          d.scale(1, 1);
         });
       }
-    }
+    },
   },
 
   data() {
     return {
+      canvasConversionWorker: new Worker("/workers/transform_coordinates.js"),
       isRedrawingCanvasSize: true,
       hasMarked: false,
       selectedBrush: 0,
       brushSizes: [3, 5, 7],
+      canvasSizes: [600, 400, 300, 200],
       size: 0,
       submitting: false,
       paths: [],
@@ -147,9 +156,17 @@ export default {
   },
 
   sockets: {
-    async "success:set_drawing"(path) {
-      // await nextTick();
-      this.paths.push(path);
+    async "success:set_drawing"(stroke) {
+      if (this.htmlCanvasSize !== this.canvasSizes[0]) {
+        const convertedValues = await this.convertDrawing(
+          this.htmlCanvasSize,
+          this.canvasSizes[0],
+          stroke
+        );
+        stroke.from = convertedValues.from;
+        stroke.coordinates = convertedValues.coordinates;
+      }
+      this.paths.push(stroke);
       this.submitting = false;
       this.hasMarked = false;
       // await this.$refs.VueCanvasDrawing.redraw();
@@ -179,17 +196,81 @@ export default {
     },
 
     resizeCanvas: debounce(function (size) {
-      this.size = size - 40;
+      // find the right fit for the canvas
+      for (let i = 0; i < this.canvasSizes.length; i++) {
+        const thisCanvasSize = this.canvasSizes[i];
+        if (size <= thisCanvasSize) {
+          continue;
+        }
+        this.size = i;
+        break;
+      }
       this.isRedrawingCanvasSize = false;
     }, 1000),
 
-    submitDrawing() {
+    async submitDrawing() {
       this.submitting = true;
-      let lastStroke = this.$refs.VueCanvasDrawing.getAllStrokes().slice(-1);
-      console.log(lastStroke);
+      await this.$nextTick();
+
+      let lastStroke = this.$refs.VueCanvasDrawing.getAllStrokes().pop();
+      // convert to general canvas size
+      if (this.htmlCanvasSize !== this.canvasSizes[0]) {
+        const convertedValues = await this.convertDrawing(
+          this.canvasSizes[0],
+          this.htmlCanvasSize,
+          lastStroke
+        );
+        lastStroke.from = convertedValues.from;
+        lastStroke.coordinates = convertedValues.coordinates;
+      }
       // tag the player who drew the stroke
-      lastStroke[0].player = this.playerId;
-      this.$socket.emit("game:set_drawing", lastStroke[0]);
+      lastStroke.player = this.playerId;
+      // send to other users
+      this.$socket.emit("game:set_drawing", lastStroke);
+
+      // let lastStroke = this.$refs.VueCanvasDrawing.strokes;
+    },
+
+    convertDrawing(baseSize, currentSize, { from, coordinates }) {
+      return new Promise((resolve, reject) => {
+        const webWorker = new Worker("/workers/transform_coordinates.js");
+
+        let results = {
+          from: null,
+          coordinates: null,
+        };
+
+        // convert the 'from'
+        webWorker.postMessage({
+          returnVal: "from",
+          baseSize: baseSize,
+          currentSize: currentSize,
+          xyCoordinates: JSON.parse(JSON.stringify(from)),
+        });
+
+        // convert the coordinates
+        webWorker.postMessage({
+          returnVal: "coordinates",
+          baseSize: baseSize,
+          currentSize: currentSize,
+          xyCoordinates: JSON.parse(JSON.stringify(coordinates)),
+        });
+
+        webWorker.onmessage = ({ data }) => {
+          switch (data.returnVal) {
+            case "from":
+              results.from = data.result;
+              break;
+            case "coordinates":
+              results.coordinates = data.result;
+              break;
+          }
+
+          if (results.from !== null && results.coordinates !== null) {
+            resolve(results);
+          }
+        };
+      });
     },
   },
 };

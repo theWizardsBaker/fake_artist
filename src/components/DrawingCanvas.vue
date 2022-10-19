@@ -44,7 +44,7 @@ import { mapState } from "vuex";
 export default {
   components: {
     VueDrawingCanvas,
-    DrawingCanvasButtons
+    DrawingCanvasButtons,
   },
 
   created() {
@@ -53,13 +53,13 @@ export default {
 
     this.focused = window.document.hasFocus();
 
-    window.addEventListener('blur', this.isUnfocused);
-    window.addEventListener('focus',this.isFocused);
+    window.addEventListener("blur", this.isUnfocused);
+    window.addEventListener("focus", this.isFocused);
   },
 
   destroyed() {
-    window.removeEventListener('blur', this.isUnfocused);
-    window.removeEventListener('focus',this.isFocused);
+    window.removeEventListener("blur", this.isUnfocused);
+    window.removeEventListener("focus", this.isFocused);
   },
 
   props: {
@@ -102,8 +102,8 @@ export default {
   watch: {
     canvasSize(newVal, oldVal) {
       if (newVal !== oldVal) {
-        if(this.$refs.VueCanvasDrawing) {
-          this.paths = this.$refs.VueCanvasDrawing.getAllStrokes()
+        if (this.$refs.VueCanvasDrawing) {
+          this.paths = this.$refs.VueCanvasDrawing.getAllStrokes();
         }
         this.isRedrawingCanvasSize = true;
         this.resizeCanvas(newVal);
@@ -131,7 +131,7 @@ export default {
       size: 0,
       submitting: false,
       paths: [],
-      lineWidth: 0
+      lineWidth: 0,
     };
   },
 
@@ -144,6 +144,10 @@ export default {
       // await this.$refs.VueCanvasDrawing.redraw();
       // this.$nextTick(async () => {
       // });
+    },
+    async "success:set_all_drawings"(strokes) {
+      const convertedStrokes = await this.convertStrokes(s, false);
+      this.paths = convertedStrokes;
     },
     "error:set_drawing"(path) {
       this.submitting = false;
@@ -189,7 +193,7 @@ export default {
       this.isRedrawingCanvasSize = false;
 
       // re-get strokes from the server
-
+      this.$socket.emit("game:get_all_drawings");
     }, 1000),
 
     async submitDrawing() {
@@ -210,14 +214,13 @@ export default {
       const start = enlarge ? this.canvasSizes[0] : this.htmlCanvasSize;
       const end = enlarge ? this.htmlCanvasSize : this.canvasSizes[0];
       return new Promise((resolve, reject) => {
-
         if (this.htmlCanvasSize !== this.canvasSizes[0]) {
           const convertedStrokes = strokes.map(async (s) => {
-            const convertedValues = await this.convertPoints( start, end, s);
+            const convertedValues = await this.convertPoints(start, end, s);
             s.from = convertedValues.from;
             s.coordinates = convertedValues.coordinates;
             return s;
-          })
+          });
           // wait for all the conversions to be done
           Promise.all(convertedStrokes).then((data) => {
             resolve(data);
@@ -225,8 +228,7 @@ export default {
         } else {
           resolve(strokes);
         }
-
-      })
+      });
     },
 
     convertPoints(baseSize, currentSize, { from, coordinates }) {

@@ -6,10 +6,7 @@
         :class="['btn', selectedBrush === brushInd && 'btn-active']"
         @click="selectBrush(brushInd)"
       >
-        <font-awesome-icon
-          icon="fa-circle"
-          :class="brushIconSize(brushInd)"
-        />
+        <font-awesome-icon icon="fa-circle" :class="brushIconSize(brushInd)" />
       </div>
     </div>
 
@@ -51,7 +48,6 @@ export default {
   },
 
   props: {
-
     disabled: {
       type: Boolean,
       default: false,
@@ -61,7 +57,6 @@ export default {
       type: Boolean,
       default: false,
     },
-
   },
 
   data() {
@@ -73,24 +68,22 @@ export default {
   },
 
   methods: {
-
     brushIconSize(size) {
       return ["", "fa-xl", "fa-2xl"][size];
     },
 
     selectBrush(ind) {
       this.selectedBrush = ind;
-      this.$emit("brushSize", this.brushSizes[this.selectedBrush])
+      this.$emit("brushSize", this.brushSizes[this.selectedBrush]);
     },
 
     undoDrawing() {
-      this.$emit("undo")
+      this.$emit("undo");
     },
 
     submitDrawing() {
-      this.$emit("submit")
+      this.$emit("submit");
     },
-
   },
 };
 </script>

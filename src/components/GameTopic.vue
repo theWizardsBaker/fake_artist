@@ -3,7 +3,7 @@
     <h1
       class="font-medium leading-tight text-4xl border-2 border-cyan-300 p-3 m-3 text-center rounded-2xl"
     >
-      {{ topic.category }}: {{ topic.subject }}
+      {{ topic }}
     </h1>
   </div>
 </template>
@@ -13,8 +13,10 @@ import { mapState } from "vuex";
 
 export default {
   mounted() {
-    // get topic
-    this.$socket.emit("game:get_topic");
+    // get topic if we don't already have one
+    if (!this.topic) {
+      this.$socket.emit("game:get_topic", this.playerId);
+    }
   },
   computed: {
     ...mapState({

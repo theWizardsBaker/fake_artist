@@ -27,9 +27,9 @@
         <button
           :class="[
             'btn btn-success sm:btn-wide gap-3 sm:ml-auto sm:flex-grow-0',
-            submitting && 'loading'
+            submitting && 'loading',
           ]"
-          :disabled="!hasMarked || !isTurn || submitting"
+          :disabled="!hasMarked || !isTurn"
           @click="submitDrawing"
         >
           <font-awesome-icon icon="fa-floppy-disk" class="fa-2xl" />
@@ -37,6 +37,7 @@
         </button>
       </div>
       <div class="flex justify-center items-center">
+        {{ paths.length }}
         <button
           v-if="isRedrawingCanvasSize"
           class="loading btn btn-outline btn-xl mt-10"
@@ -45,17 +46,18 @@
         </button>
         <vue-drawing-canvas
           v-else
+          ref="VueCanvasDrawing"
           :height="size"
           :width="size"
-          ref="VueCanvasDrawing"
           :lock="canvasLocked"
           :lineWidth="lineWidth"
           :color="color"
+          :key="paths.length"
+          :initial-image="paths"
           lineCap="round"
           lineJoin="round"
-          @mouseup="hasMarked = true"
-          @touchend="hasMarked = true"
-          :initialImage="initialImage"
+          @mouseup="setMark"
+          @touchend="setMark"
         />
       </div>
     </div>
@@ -74,7 +76,7 @@ export default {
 
   created() {
     // get existing drawing from the backend
-    // this.initialImage =
+    // this.paths =
   },
 
   props: {
@@ -100,9 +102,9 @@ export default {
   },
 
   computed: {
-
     ...mapState({
       playerId: (state) => state.lobby.playerId,
+      turn: (state) => state.game.playerTurn,
     }),
 
     lineWidth() {
@@ -131,18 +133,30 @@ export default {
       brushSizes: [3, 5, 7],
       size: 0,
       submitting: false,
-      initialImage: []
+      paths: [],
     };
   },
 
   sockets: {
-    'SOCKET_success:set_drawing'(path) {
-      console.log(path)
-      this.initialImage.push(path)
-    }
+    async "success:set_drawing"(path) {
+      // await nextTick();
+      this.paths.push(path);
+      this.submitting = false;
+      this.hasMarked = false;
+      // await this.$refs.VueCanvasDrawing.redraw();
+      // this.$nextTick(async () => {
+      // });
+    },
+    "error:set_drawing"(path) {
+      this.submitting = false;
+    },
   },
 
   methods: {
+    setMark() {
+      this.hasMarked = true;
+    },
+
     brushIconSize(size) {
       return ["", "fa-xl", "fa-2xl"][size];
     },
@@ -162,11 +176,12 @@ export default {
 
     submitDrawing() {
       this.submitting = true;
-      let lastStroke = this.$refs.VueCanvasDrawing.getAllStrokes();
+      let lastStroke = this.$refs.VueCanvasDrawing.getAllStrokes().slice(-1);
+      console.log(lastStroke);
       // tag the player who drew the stroke
-      lastStroke.player = this.playerId;
-      this.$socket.emit("game:set_drawing", JSON.stringify(lastStroke));
-    }
+      lastStroke[0].player = this.playerId;
+      this.$socket.emit("game:set_drawing", lastStroke[0]);
+    },
   },
 };
 </script>

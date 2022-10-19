@@ -74,13 +74,13 @@ export default {
 
   sockets: {
     "success:lobby_rejoin_game"() {
-      if(this.$router.name !== "game-play"){
+      if (this.$router.name !== "game-play") {
         this.goToGame();
       }
     },
 
     "success:lobby_rejoin_lobby"() {
-      if(this.$router.name !== "game-lobby"){
+      if (this.$router.name !== "game-lobby") {
         this.goToLobby();
       }
     },

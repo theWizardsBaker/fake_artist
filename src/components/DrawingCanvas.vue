@@ -37,7 +37,7 @@
         </button>
       </div>
       <div class="flex justify-center items-center">
-        {{ paths.length }}
+
         <button
           v-if="isRedrawingCanvasSize"
           class="loading btn btn-outline btn-xl mt-10"
@@ -123,6 +123,15 @@ export default {
         this.resizeCanvas(newVal);
       }
     },
+    isRedrawingCanvasSize(newVal) {
+      if(newVal === false) {      
+        this.$nextTick(async () => {
+          let c = document.getElementById(this.$refs.VueCanvasDrawing.canvasId);
+          let d = c.getContext("2d");
+          console.log(d.scale(.5, .5));
+        });
+      }
+    }
   },
 
   data() {

@@ -24,7 +24,7 @@
           :lineWidth="lineWidth"
           :color="color"
           :key="paths.length"
-          :initial-image="paths"
+          :initialImage="paths"
           lineCap="round"
           lineJoin="round"
           @mouseup="setMark"
@@ -55,6 +55,8 @@ export default {
 
     window.addEventListener("blur", this.isUnfocused);
     window.addEventListener("focus", this.isFocused);
+
+    // this.getAllDrawings();
   },
 
   destroyed() {
@@ -119,6 +121,12 @@ export default {
         });
       }
     },
+    focused(newVal) {
+      if (newVal) {
+        // get anything we might have missed
+        // this.getAllDrawings();
+      }
+    },
   },
 
   data() {
@@ -145,8 +153,10 @@ export default {
       // this.$nextTick(async () => {
       // });
     },
-    async "success:set_all_drawings"(strokes) {
-      const convertedStrokes = await this.convertStrokes(s, false);
+    async "success:get_all_drawings"(drawings) {
+      console.log("BONG!");
+      this.paths = [];
+      const convertedStrokes = await this.convertStrokes(drawings, false);
       this.paths = convertedStrokes;
     },
     "error:set_drawing"(path) {
@@ -189,10 +199,12 @@ export default {
         this.size = i;
         break;
       }
-
-      this.isRedrawingCanvasSize = false;
-
       // re-get strokes from the server
+      this.getAllDrawings();
+      this.isRedrawingCanvasSize = false;
+    }, 1000),
+
+    getAllDrawings: debounce(function () {
       this.$socket.emit("game:get_all_drawings");
     }, 1000),
 
@@ -213,6 +225,7 @@ export default {
       // enlarge or reduce
       const start = enlarge ? this.canvasSizes[0] : this.htmlCanvasSize;
       const end = enlarge ? this.htmlCanvasSize : this.canvasSizes[0];
+
       return new Promise((resolve, reject) => {
         if (this.htmlCanvasSize !== this.canvasSizes[0]) {
           const convertedStrokes = strokes.map(async (s) => {

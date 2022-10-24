@@ -74,6 +74,7 @@ export default {
       commit("setMaxRounds", maxRounds);
       commit("setTopic");
       commit("startGame");
+      commit("setRound", 0);
     },
 
     "SOCKET_success:lobby_rejoin_game"(
@@ -97,7 +98,6 @@ export default {
     },
 
     "SOCKET_success:game_quit"({ commit }) {
-      alert("HELLO");
       commit("leaveGame");
     },
 

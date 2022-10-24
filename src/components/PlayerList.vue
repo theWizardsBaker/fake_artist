@@ -1,7 +1,7 @@
 <template>
-  <div class="pt-5">
-    <h3 class="text-center font-bold">Players</h3>
-    <ul class="menu bg-base-100 p-2 rounded-box bg-secondary">
+  <div>
+    <h3 class="text-center font-bold py-3">Players</h3>
+    <ul class="menu p-2 rounded-box bg-neutral text-neutral-content">
       <li v-for="(player, playerInd) in players">
         <player-card
           v-bind="player"
@@ -9,7 +9,7 @@
           :key="player._id"
           :showTurn="showTurn"
           :isSelectable="showSelect"
-          :selected="player._id === selected"
+          :selected="player._id === selection"
           @selected="playerSelected(player._id)"
         />
       </li>
@@ -32,6 +32,10 @@ export default {
       type: Boolean,
       default: false,
     },
+
+    selection: {
+      type: String,
+    },
   },
 
   components: {
@@ -42,6 +46,12 @@ export default {
     ...mapGetters({
       players: "lobby/orderedPlayers",
     }),
+  },
+
+  watch: {
+    selection(selectionValue) {
+      this.selected = selectionValue;
+    },
   },
 
   data() {

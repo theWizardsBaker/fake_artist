@@ -15,6 +15,7 @@ import {
   faCircleInfo,
   faCircleCheck,
   faRightFromBracket,
+  faCheckToSlot,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -32,5 +33,6 @@ library.add(faCircleInfo);
 library.add(faCircleCheck);
 library.add(faRightFromBracket);
 library.add(faX);
+library.add(faCheckToSlot);
 
 export default FontAwesomeIcon;

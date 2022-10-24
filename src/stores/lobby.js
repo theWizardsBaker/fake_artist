@@ -34,6 +34,10 @@ export default {
       const minTurnOrder = Math.min(...state.players.map((p) => p.order));
       return minTurnOrder === getters.player.order;
     },
+
+    hiddenArtist(state) {
+      return state.players.filter((p) => p.isHiddenArtist)[0];
+    },
   },
 
   mutations: {
@@ -71,6 +75,18 @@ export default {
       const playerInd = state.players.findIndex((p) => p._id === playerId);
       state.players.splice(playerInd, 1);
     },
+
+    setHiddenArtist(state, hiddenArtistId) {
+      state.players.forEach((p) => {
+        if (p._id === hiddenArtistId) {
+          p.isHiddenArtist = true;
+        }
+      });
+    },
+
+    setPlayerVotes(state, votes) {
+      const players = state.players.forEach((p) => (p.votes = votes[p._id]));
+    },
   },
 
   actions: {
@@ -79,6 +95,10 @@ export default {
       commit("setPlayers", gameLobby.players);
       commit("updateSwatches", gameLobby.colors);
       commit("setPlayerId", playerId);
+    },
+
+    "SOCKET_success:game_quit"({ commit }) {
+      commit("updateGameCode", null);
     },
 
     "SOCKET_success:lobby_quit"({ commit }) {
@@ -103,6 +123,11 @@ export default {
 
     "SOCKET_success:colors_updated"({ commit }, player) {
       commit("updatePlayer", player);
+    },
+
+    "SOCKET_success:voting_complete"({ commit }, { hiddenArtist, votes }) {
+      commit("setHiddenArtist", hiddenArtist);
+      commit("setPlayerVotes", votes);
     },
 
     updateGameCode({ commit }, code) {

@@ -13,39 +13,18 @@
         </label>
       </template>
     </modal>
-    <modal :show="showExitConfirmation">
-      <template v-slot:title> Exit game? </template>
-      <template v-slot:body>
-        Quitting will end the game for all players. Are you sure you want to
-        quit?
-      </template>
-      <template v-slot:action>
-        <button class="btn btn-info" @click="showExitConfirmation = false">
-          Cancel
-        </button>
-        <button
-          class="btn btn-warning"
-          @click="backToHome()"
-          :disabled="!exitConfirmationEnabled"
-        >
-          Quit
-        </button>
-      </template>
-    </modal>
     <!-- show players the topic -->
     <div class="flex justify-center pt-5">
       <game-topic />
+      {{ inProgress }}
+      {{ round }}
+      {{ maxRounds }}
     </div>
     <div class="flex justify-center">
       <div class="flex flex-col lg:flex-row">
         <div class="flex-initial hidden md:block place-self-center text-center">
           <player-list showTurn />
-          <button
-            class="btn btn-info btn-outline text-center rounded-2xl m-5 gap-2"
-            @click="showExitConfirmation = true"
-          >
-            End Game <font-awesome-icon icon="fa-right-from-bracket" />
-          </button>
+          <game-exit-button />
         </div>
         <div
           class="flex-auto"
@@ -64,12 +43,7 @@
           v-show="selectedDisplay === 1"
         >
           <player-list showTurn />
-          <button
-            class="btn btn-info btn-outline text-center rounded-2xl m-5 gap-2"
-            @click="showExitConfirmation = true"
-          >
-            End Game <font-awesome-icon icon="fa-right-from-bracket" />
-          </button>
+          <game-exit-button />
         </div>
       </div>
     </div>
@@ -93,6 +67,7 @@ import Modal from "@/components/ui/Modal.vue";
 import PlayerList from "@/components/PlayerList.vue";
 import GameTopic from "@/components/GameTopic.vue";
 import DrawingCanvas from "@/components/DrawingCanvas.vue";
+import GameExitButton from "@/components/GameExitButton.vue";
 import { mapGetters, mapState } from "vuex";
 
 export default {
@@ -103,6 +78,7 @@ export default {
     GameTopic,
     DrawingCanvas,
     Modal,
+    GameExitButton,
   },
 
   // beforeRouteLeave (to, from , next) {
@@ -124,6 +100,9 @@ export default {
     this.$nextTick(() => {
       this.getCanvasDimensions();
     });
+    if (this.isTurn) {
+      this.showTurnNotification = true;
+    }
   },
 
   unmounted() {
@@ -133,6 +112,9 @@ export default {
   computed: {
     ...mapState({
       playerTurn: (state) => state.game.playerTurn,
+      inProgress: (state) => state.game.inProgress,
+      round: (state) => state.game.round,
+      maxRounds: (state) => state.game.maxRounds,
     }),
 
     ...mapGetters({
@@ -158,14 +140,6 @@ export default {
       }
     },
 
-    showExitConfirmation(newVal) {
-      if (newVal) {
-        setTimeout(() => (this.exitConfirmationEnabled = true), "2000");
-      } else {
-        this.exitConfirmationEnabled = false;
-      }
-    },
-
     isGameOver(newVal) {
       this.$router.replace({ name: "game-vote" });
     },
@@ -178,8 +152,6 @@ export default {
       width: document.documentElement.clientWidth,
       canvasSize: "400",
       showTurnNotification: false,
-      showExitConfirmation: false,
-      exitConfirmationEnabled: false,
     };
   },
 
@@ -194,10 +166,6 @@ export default {
       ).width;
       const digitRegex = /\d+/;
       this.canvasSize = digitRegex.exec(containerWidthStr)[0];
-    },
-
-    backToHome() {
-      this.$router.replace({ name: "home" });
     },
   },
 };

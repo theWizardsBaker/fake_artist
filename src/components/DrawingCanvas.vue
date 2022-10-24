@@ -154,7 +154,6 @@ export default {
       // });
     },
     async "success:get_all_drawings"(drawings) {
-      console.log("BONG!");
       this.paths = [];
       const convertedStrokes = await this.convertStrokes(drawings, false);
       this.paths = convertedStrokes;

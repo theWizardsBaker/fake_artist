@@ -1,18 +1,50 @@
 <template>
   <div class="min-h-screen bg-base-200">
+    <modal :show="showTurnNotification">
+      <template v-slot:title> You're the artist! </template>
+      <template v-slot:body>
+        It's your turn, pick a brush size and draw a single mark on the canvas.
+        <br />
+        When you are finished click the `Save` button.
+      </template>
+      <template v-slot:action>
+        <label class="btn btn-info" @click="showTurnNotification = false">
+          Okay!
+        </label>
+      </template>
+    </modal>
+    <modal :show="showExitConfirmation">
+      <template v-slot:title> Exit game? </template>
+      <template v-slot:body>
+        Quitting will end the game for all players. Are you sure you want to
+        quit?
+      </template>
+      <template v-slot:action>
+        <button class="btn btn-info" @click="showExitConfirmation = false">
+          Cancel
+        </button>
+        <button
+          class="btn btn-warning"
+          @click="backToHome()"
+          :disabled="!exitConfirmationEnabled"
+        >
+          Quit
+        </button>
+      </template>
+    </modal>
     <!-- show players the topic -->
     <div class="flex justify-center pt-5">
       <game-topic />
     </div>
     <div class="flex justify-center">
       <div class="flex flex-col lg:flex-row">
-        <div class="flex-initial hidden md:block place-self-center">
+        <div class="flex-initial hidden md:block place-self-center text-center">
           <player-list showTurn />
           <button
-            class="btn btn-info btn-outline btn-wide text-center rounded-2xl m-5 gap-2"
-            @click="backToHome()"
+            class="btn btn-info btn-outline text-center rounded-2xl m-5 gap-2"
+            @click="showExitConfirmation = true"
           >
-            End Game <font-awesome-icon icon="fa-x" />
+            End Game <font-awesome-icon icon="fa-right-from-bracket" />
           </button>
         </div>
         <div
@@ -23,17 +55,20 @@
         >
           <drawing-canvas
             :canvasSize="canvasSize"
-            :isTurn="isTurn"
+            :isTurn="isTurn && !isGameOver"
             :color="player.color"
           />
         </div>
-        <div class="flex-auto place-self-center" v-show="selectedDisplay === 1">
+        <div
+          class="flex-auto place-self-center text-center"
+          v-show="selectedDisplay === 1"
+        >
           <player-list showTurn />
           <button
-            class="btn btn-info btn-outline btn-wide text-center rounded-2xl m-5 gap-2"
-            @click="backToHome()"
+            class="btn btn-info btn-outline text-center rounded-2xl m-5 gap-2"
+            @click="showExitConfirmation = true"
           >
-            End Game <font-awesome-icon icon="fa-x" />
+            End Game <font-awesome-icon icon="fa-right-from-bracket" />
           </button>
         </div>
       </div>
@@ -54,16 +89,20 @@
 </template>
 
 <script>
+import Modal from "@/components/ui/Modal.vue";
 import PlayerList from "@/components/PlayerList.vue";
 import GameTopic from "@/components/GameTopic.vue";
 import DrawingCanvas from "@/components/DrawingCanvas.vue";
 import { mapGetters, mapState } from "vuex";
 
 export default {
+  name: "PlayGame",
+
   components: {
     PlayerList,
     GameTopic,
     DrawingCanvas,
+    Modal,
   },
 
   // beforeRouteLeave (to, from , next) {
@@ -99,6 +138,7 @@ export default {
     ...mapGetters({
       player: "lobby/player",
       players: "lobby/orderedPlayers",
+      isGameOver: "game/isGameOver",
     }),
 
     isTurn() {
@@ -111,6 +151,24 @@ export default {
       this.selectedDisplay = 0;
       this.getCanvasDimensions();
     },
+
+    isTurn(newVal) {
+      if (newVal) {
+        this.showTurnNotification = true;
+      }
+    },
+
+    showExitConfirmation(newVal) {
+      if (newVal) {
+        setTimeout(() => (this.exitConfirmationEnabled = true), "2000");
+      } else {
+        this.exitConfirmationEnabled = false;
+      }
+    },
+
+    isGameOver(newVal) {
+      this.$router.replace({ name: "game-vote" });
+    },
   },
 
   data() {
@@ -119,6 +177,9 @@ export default {
       displays: ["fa-paintbrush", "fa-users"],
       width: document.documentElement.clientWidth,
       canvasSize: "400",
+      showTurnNotification: false,
+      showExitConfirmation: false,
+      exitConfirmationEnabled: false,
     };
   },
 

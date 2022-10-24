@@ -1,17 +1,25 @@
+const DEFAULT_STATE = () => ({
+  timeLimit: 0,
+  inProgress: false,
+  playerCount: 0,
+  playerTurn: 0,
+  round: 0,
+  maxRounds: 0,
+  topic: null,
+});
+
 export default {
   id: "game",
 
   namespaced: true,
 
-  state: () => ({
-    timeLimit: 0,
-    inProgress: false,
-    playerCount: 0,
-    playerTurn: 0,
-    round: 0,
-    maxRounds: 0,
-    topic: null,
-  }),
+  state: () => DEFAULT_STATE(),
+
+  getters: {
+    isGameOver(state) {
+      return state.round == state.maxRounds;
+    },
+  },
 
   mutations: {
     startGame(state) {
@@ -50,6 +58,10 @@ export default {
         state.playerTurn += 1;
       }
     },
+    leaveGame(state) {
+      // reset to default state
+      state = DEFAULT_STATE();
+    },
   },
 
   actions: {
@@ -82,6 +94,11 @@ export default {
 
     "SOCKET_success:set_drawing"({ commit }) {
       commit("incrementPlayerTurn");
+    },
+
+    "SOCKET_success:game_quit"({ commit }) {
+      alert("HELLO");
+      commit("leaveGame");
     },
 
     "SOCKET_success:lobby_quit"({ commit }) {

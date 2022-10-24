@@ -23,6 +23,11 @@ const router = createRouter({
           name: "game-play",
           component: () => import("@/views/PlayView.vue"),
         },
+        {
+          path: "vote",
+          name: "game-vote",
+          component: () => import("@/views/VoteView.vue"),
+        },
       ],
     },
     {

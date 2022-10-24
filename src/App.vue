@@ -26,7 +26,7 @@
 
 <script>
 import { FadeInOut } from "vue3-transitions";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import { RouterView } from "vue-router";
 import Navigation from "@/components/ui/Navigation.vue";
 
@@ -70,12 +70,20 @@ export default {
       gameCode: (state) => state.lobby.code,
       inGame: (state) => state.game.inProgress,
     }),
+
+    ...mapGetters({
+      isGameOver: "game/isGameOver",
+    }),
   },
 
   sockets: {
     "success:lobby_rejoin_game"() {
       if (this.$router.name !== "game-play") {
-        this.goToGame();
+        if (this.isGameOver) {
+          this.goToVote();
+        } else {
+          this.goToGame();
+        }
       }
     },
 
@@ -91,6 +99,13 @@ export default {
   },
 
   methods: {
+    goToVote() {
+      this.$router.replace({
+        name: "game-vote",
+        params: { gameId: this.gameCode },
+      });
+    },
+
     goToGame() {
       this.$router.replace({
         name: "game-play",

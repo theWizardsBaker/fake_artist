@@ -1,16 +1,16 @@
 <template>
   <div class="pt-5">
     <h3 class="text-center font-bold">Players</h3>
-    <ul class="bg-secondary rounded-lg text-gray-900 m-2 my-4">
-      <li
-        class="px-6 py-2 w-full rounded-t-lg border-b border-gray-600 last:border-b-0"
-        v-for="(player, playerInd) in players"
-      >
+    <ul class="menu bg-base-100 p-2 rounded-box bg-secondary">
+      <li v-for="(player, playerInd) in players">
         <player-card
           v-bind="player"
           :order="playerInd"
           :key="player._id"
           :showTurn="showTurn"
+          :isSelectable="showSelect"
+          :selected="player._id === selected"
+          @selected="playerSelected(player._id)"
         />
       </li>
     </ul>
@@ -45,7 +45,18 @@ export default {
   },
 
   data() {
-    return {};
+    return {
+      selected: null,
+    };
+  },
+
+  methods: {
+    playerSelected(player) {
+      if (this.showSelect) {
+        this.selected = player;
+        this.$emit("selected", this.selected);
+      }
+    },
   },
 };
 </script>

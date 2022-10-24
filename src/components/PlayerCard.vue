@@ -1,5 +1,8 @@
 <template>
-  <div class="flex items-center space-x-3 py-1">
+  <a
+    :class="['flex items-center space-x-3', selected && 'active']"
+    @click.default="select"
+  >
     <div>
       <h3 class="font-bold">{{ order + 1 }}</h3>
     </div>
@@ -12,16 +15,13 @@
     <div>
       <div class="font-bold">{{ name }}</div>
     </div>
-    <div v-if="selectable">
-      <input type="checkbox" />
-    </div>
     <div class="flex-auto text-right" v-if="showTurn">
       <button class="btn btn-xs btn-primary gap-2" v-show="isTurn">
         Artist
         <font-awesome-icon icon="fa-paintbrush" />
       </button>
     </div>
-  </div>
+  </a>
 </template>
 
 <script>
@@ -32,7 +32,7 @@ export default {
     order: Number,
     name: String,
     color: String,
-    selectable: {
+    isSelectable: {
       type: Boolean,
       default: false,
     },
@@ -61,6 +61,10 @@ export default {
 
     isTurn() {
       return this.order === this.playerTurn;
+    },
+
+    select() {
+      this.$emit("selected");
     },
   },
 };

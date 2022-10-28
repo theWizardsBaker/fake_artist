@@ -3,7 +3,10 @@
     <div class="btn-group rounded-2xl">
       <div
         v-for="(brush, brushInd) in brushSizes"
-        :class="['btn', selectedBrush === brushInd && 'btn-active']"
+        :class="[
+          'btn btn-sm sm:btn-md',
+          selectedBrush === brushInd && 'btn-active',
+        ]"
         @click="selectBrush(brushInd)"
       >
         <font-awesome-icon icon="fa-circle" :class="brushIconSize(brushInd)" />
@@ -11,24 +14,27 @@
     </div>
 
     <button
-      class="btn gap-3"
+      class="btn gap-3 btn-sm sm:btn-md"
       @click.prevent="undoDrawing()"
       :disabled="disabled"
     >
-      <font-awesome-icon icon="fa-eraser" class="fa-2xl" />
-      <span class="pt-2">Undo</span>
+      <font-awesome-icon icon="fa-eraser" class="fa-xl text-lg sm:text-3xl" />
+      <span>Undo</span>
     </button>
 
     <button
       :class="[
-        'btn btn-success sm:btn-wide gap-3 sm:ml-auto sm:flex-grow-0',
+        'btn btn-success btn-sm sm:btn-md sm:btn-wide gap-3 sm:ml-auto sm:flex-grow-0',
         loading && 'loading',
       ]"
       :disabled="disabled"
       @click="submitDrawing"
     >
-      <font-awesome-icon icon="fa-floppy-disk" class="fa-2xl" />
-      <span class="pt-2">Save</span>
+      <font-awesome-icon
+        icon="fa-floppy-disk"
+        class="fa-xl text-lg sm:text-3xl"
+      />
+      <span>Save</span>
     </button>
   </div>
 </template>
@@ -69,7 +75,11 @@ export default {
 
   methods: {
     brushIconSize(size) {
-      return ["", "fa-xl", "fa-2xl"][size];
+      return [
+        "text-xs sm:text-sm",
+        "text-lg sm:text-2xl",
+        "text-2xl sm:text-4xl",
+      ][size];
     },
 
     selectBrush(ind) {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="text-center font-bold py-3">Players</h3>
-    <ul class="menu p-2 rounded-box bg-neutral text-neutral-content">
+    <ul class="menu p-2 rounded-box bg-secondary text-secondary-content">
       <li v-for="(player, playerInd) in players">
         <player-card
           v-bind="player"

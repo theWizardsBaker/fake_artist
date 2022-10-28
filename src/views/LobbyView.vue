@@ -17,9 +17,11 @@
               <font-awesome-icon icon="fa-x" />
             </button>
           </div>
-          <div class="p-4 text-center">
+          <div class="p-4 text-center text-primary-content">
             <label>Game Code</label>
-            <h3 class="font-medium text-6xl my-3 border-2 p-3 rounded-2xl">
+            <h3
+              class="font-medium text-6xl my-3 border-2 border-primary-content p-3 rounded-2xl"
+            >
               {{ $route.params.gameId }}
             </h3>
           </div>
@@ -44,7 +46,7 @@
                   v-model="color"
                   :swatches="swatches"
                   swatch-size="54"
-                  background-color="darkGray"
+                  background-color="white"
                   show-border
                   inline
                 />
@@ -78,7 +80,6 @@ export default {
     // if the player navigates away from the page
     // send an 'exit' signal
     if (!this.gameInProgress) {
-      alert("GONE");
       this.exitGame();
     }
   },

@@ -36,7 +36,7 @@
       @click="findLobby"
       :loading="loading"
       :disabled="loading || gameId.length < 1 || name.length < 1"
-      class="btn-outline btn-info"
+      class="btn-info"
     >
       Join
     </game-entry-button>

@@ -1,6 +1,20 @@
 <template>
   <section>
     <div>
+      <label class="label text-xs mb-2"> Game Rounds (default 2)</label>
+      <input
+        type="range"
+        :min="0"
+        :max="roundLimits.length - 1"
+        v-model="rounds"
+        class="range"
+        step="1"
+      />
+      <div class="w-full flex justify-between text-xs px-2 pb-5">
+        <span v-for="roundLimit in roundLimits">{{ roundLimit }}</span>
+      </div>
+    </div>
+    <div>
       <label class="label text-xs mb-2"> Turn Time Limit (Seconds) </label>
       <input
         type="range"
@@ -28,17 +42,10 @@
       />
     </div>
 
-    <div class="form-control mb-5">
-      <label class="label cursor-pointer">
-        <span class="label-text">Spectator</span>
-        <input v-model="spectator" type="checkbox" class="checkbox" />
-      </label>
-    </div>
-
     <!-- create button -->
     <game-entry-button
       @click="createNewGame()"
-      class="btn-outline btn-success"
+      class="btn-success"
       :loading="loading"
       :disabled="loading || name.length < 1"
     >
@@ -64,7 +71,8 @@ export default {
       loading: false,
       turnTimeLimit: 0,
       timeLimits: ["15", "30", "60"],
-      spectator: false,
+      rounds: 0,
+      roundLimits: ["2", "3", "4"],
       name: "",
     };
   },
@@ -74,7 +82,6 @@ export default {
       this.$socket.emit("lobby:join", {
         lobby: gameId,
         playerName: this.name,
-        isSpectator: this.spectator,
       });
     },
 
@@ -97,7 +104,10 @@ export default {
           ? this.timeLimits[this.turnTimeLimit]
           : null;
       this.loading = true;
-      this.$socket.emit("lobby:create", timeLimit);
+      this.$socket.emit("lobby:create", {
+        maxRounds: this.roundLimits[this.rounds],
+        timeLimit: this.timeLimits[this.turnTimeLimit],
+      });
     },
   },
 };

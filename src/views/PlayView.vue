@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen bg-base-200">
+    <count-down :start="startTurn" v-show="isTurn" />
     <modal :show="showTurnNotification">
       <template v-slot:title> You're the artist! </template>
       <template v-slot:body>
@@ -8,7 +9,13 @@
         When you are finished click the `Save` button.
       </template>
       <template v-slot:action>
-        <label class="btn btn-info" @click="showTurnNotification = false">
+        <label
+          class="btn btn-info"
+          @click="
+            showTurnNotification = false;
+            startTurn = true;
+          "
+        >
           Okay!
         </label>
       </template>
@@ -16,9 +23,6 @@
     <!-- show players the topic -->
     <div class="flex justify-center pt-5">
       <game-topic />
-      {{ inProgress }}
-      {{ round }}
-      {{ maxRounds }}
     </div>
     <div class="flex justify-center">
       <div class="flex flex-col lg:flex-row">
@@ -27,7 +31,7 @@
           <game-exit-button />
         </div>
         <div
-          class="flex-auto"
+          class="flex-auto mb-10"
           v-show="selectedDisplay === 0"
           ref="canvas"
           :style="{ width: width, height: width }"
@@ -64,6 +68,7 @@
 
 <script>
 import Modal from "@/components/ui/Modal.vue";
+import CountDown from "@/components/ui/CountDown.vue";
 import PlayerList from "@/components/PlayerList.vue";
 import GameTopic from "@/components/GameTopic.vue";
 import DrawingCanvas from "@/components/DrawingCanvas.vue";
@@ -79,6 +84,7 @@ export default {
     DrawingCanvas,
     Modal,
     GameExitButton,
+    CountDown,
   },
 
   // beforeRouteLeave (to, from , next) {
@@ -111,6 +117,7 @@ export default {
 
   computed: {
     ...mapState({
+      playerId: (state) => state.lobby.playerId,
       playerTurn: (state) => state.game.playerTurn,
       inProgress: (state) => state.game.inProgress,
       round: (state) => state.game.round,
@@ -137,6 +144,8 @@ export default {
     isTurn(newVal) {
       if (newVal) {
         this.showTurnNotification = true;
+      } else {
+        this.startTurn = false;
       }
     },
 
@@ -152,6 +161,7 @@ export default {
       width: document.documentElement.clientWidth,
       canvasSize: "400",
       showTurnNotification: false,
+      startTurn: false,
     };
   },
 

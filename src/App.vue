@@ -40,21 +40,21 @@
         <b>fake artist</b> among them. The fake artist tries to avoid detection.
         <br />
         <br />
-        When the game begins, players see the round's random topic,
+        When the game begins, players see the round's <b>random topic</b>,
         <i>e.g. "Apple"</i>. The exception is for the fake artist, they will
         only see <i>"???"</i>.
         <br />
         <br />
         Players take turns drawing single strokes on the canvas. After everyone
-        has drawn (2 times by default), players vote on who they think the fake
-        artist is.
+        has drawn (2 times by default), players <b>vote</b> on who they think
+        the fake artist is.
         <br />
         <br />
-        The fake artist wins if they don't get the majority vote.
+        The fake artist <b>wins</b> if they don't receive the majority vote.
         <br />
         <br />
-        But even if the fake artist gets caught, they get one chance to guess
-        the topic. If they guess correctly, they win!
+        But, even if the fake artist gets caught, they get <b>one chance</b> to
+        guess the topic. If they guess correctly, they win!
       </template>
     </modal>
     <router-view v-slot="{ Component, route }">
@@ -79,13 +79,13 @@ export default {
   },
 
   created() {
+    this.rejoinLobby();
     // check and see if a game is in progress
-    this.$socket.emit("lobby:rejoin", this.gameCode);
+    window.addEventListener("visibilitychange", this.rejoinLobby);
   },
 
-  beforeMount() {
-    // find if we already have an existing game
-    // this.$socket.emit("game:find", "12345");
+  unmounted() {
+    window.removeEventListener("visibilitychange", this.rejoinLobby);
   },
 
   watch: {
@@ -173,6 +173,10 @@ export default {
 
     goHome() {
       this.$router.replace({ name: "home" });
+    },
+
+    rejoinLobby() {
+      this.$socket.emit("lobby:rejoin", this.gameCode);
     },
   },
 };

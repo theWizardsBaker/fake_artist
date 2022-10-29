@@ -47,23 +47,6 @@ export default {
     DrawingCanvasButtons,
   },
 
-  created() {
-    // get existing drawing from the backend
-    // this.paths =
-
-    this.focused = window.document.hasFocus();
-
-    window.addEventListener("blur", this.isUnfocused);
-    window.addEventListener("focus", this.isFocused);
-
-    // this.getAllDrawings();
-  },
-
-  destroyed() {
-    window.removeEventListener("blur", this.isUnfocused);
-    window.removeEventListener("focus", this.isFocused);
-  },
-
   props: {
     lockCanvas: {
       type: Boolean,
@@ -89,6 +72,14 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+
+  async mounted() {
+    window.addEventListener("visibilitychange", this.getAllDrawings);
+  },
+
+  unmounted() {
+    window.removeEventListener("visibilitychange", this.getAllDrawings);
   },
 
   computed: {
@@ -126,12 +117,6 @@ export default {
         });
       }
     },
-    focused(newVal) {
-      if (newVal) {
-        // get anything we might have missed
-        // this.getAllDrawings();
-      }
-    },
     isTimeUp(newVal) {
       if (newVal) {
         this.hasMarked = true;
@@ -142,11 +127,10 @@ export default {
 
   data() {
     return {
-      focused: false,
       canvasConversionWorker: new Worker("/workers/transform_coordinates.js"),
       isRedrawingCanvasSize: true,
       hasMarked: false,
-      canvasSizes: [600, 400, 300, 200],
+      canvasSizes: [600, 400, 350, 250],
       size: 0,
       submitting: false,
       paths: [],
@@ -175,14 +159,6 @@ export default {
   },
 
   methods: {
-    isUnfocused() {
-      this.focused = false;
-    },
-
-    isFocused() {
-      this.focused = true;
-    },
-
     setMark() {
       this.hasMarked = true;
     },

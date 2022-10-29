@@ -24,12 +24,12 @@
       />
     </div>
 
-    <div class="form-control mb-5">
+    <!--     <div class="form-control mb-5">
       <label class="label cursor-pointer">
         <span class="label-text">Spectator</span>
         <input v-model="spectator" type="checkbox" class="checkbox" />
       </label>
-    </div>
+    </div> -->
 
     <!-- join button -->
     <game-entry-button

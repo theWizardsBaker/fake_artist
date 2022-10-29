@@ -18,7 +18,7 @@
                 </div>
                 <div class="text-2xl">{{ hiddenArtist.name }}</div>
               </div>
-              <div v-else class="p-2">Select the fake artist</div>
+              <div v-else class="p-2 text-center">Select the fake artist</div>
               <player-list
                 @selected="setSelection"
                 :selection="selection"
@@ -62,6 +62,11 @@ export default {
 
   mounted() {
     this.$socket.emit("game:voted", this.player._id);
+    window.addEventListener("visibilitychange", this.checkVotes);
+  },
+
+  unmounted() {
+    window.removeEventListener("visibilitychange", this.checkVotes);
   },
 
   computed: {
@@ -79,17 +84,6 @@ export default {
     };
   },
 
-  methods: {
-    setSelection(player) {
-      this.selection = player;
-    },
-
-    vote() {
-      this.voted = true;
-      this.$socket.emit("game:vote", this.player._id, this.selection);
-    },
-  },
-
   sockets: {
     "success:voted"(playerId) {
       this.selection = playerId;
@@ -103,6 +97,25 @@ export default {
 
     "success:voting_complete"() {
       this.revealHiddenArtist = true;
+    },
+  },
+
+  methods: {
+    setSelection(player) {
+      this.selection = player;
+    },
+
+    vote() {
+      this.voted = true;
+      this.$socket.emit("game:vote", this.player._id, this.selection);
+    },
+
+    async checkVotes() {
+      await this.$nextTick();
+      // only look if the window is visible
+      if (document.visibilityState === "visible") {
+        this.$socket.emit("game:get_votes", this.player._id);
+      }
     },
   },
 };

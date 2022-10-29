@@ -97,11 +97,16 @@ export default {
       commit("setPlayerId", playerId);
     },
 
-    "SOCKET_success:game_quit"({ commit }) {
+    "SOCKET_success:lobby_quit"({ commit }) {
       commit("updateGameCode", null);
     },
 
-    "SOCKET_success:lobby_quit"({ commit }) {
+    "SOCKET_success:fetch_players"({ commit }, { players, colors }) {
+      commit("setPlayers", players);
+      commit("updateSwatches", colors);
+    },
+
+    "SOCKET_success:game_quit"({ commit }) {
       commit("updateGameCode", null);
     },
 

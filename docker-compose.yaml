@@ -6,11 +6,12 @@ services:
       context: .
       args:
         NODE_ENV: development
-    command: "dev --host"
+    command: "dev"
     ports:
-      - 5173:5173
+      - $PORT:$PORT
     volumes:
       - ./src/:/var/www/http/app/src
       - ./public/:/var/www/http/app/public
     environment:
-      VITE_BACKEND_URL: "http://127.0.0.1:3000"
+      VITE_BACKEND_URL: $BACKEND_URL
+      VITE_STATIC_URL: $STATIC_URL

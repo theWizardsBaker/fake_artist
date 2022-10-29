@@ -74,6 +74,8 @@ export default {
   created() {
     // end an old game if one existed
     store.dispatch("game/endGame");
+
+    window.addEventListener("visibilitychange", this.fetchPlayers);
   },
 
   beforeUnmount() {
@@ -82,6 +84,7 @@ export default {
     if (!this.gameInProgress) {
       this.exitGame();
     }
+    window.removeEventListener("visibilitychange", this.fetchPlayers);
   },
 
   components: {
@@ -96,6 +99,7 @@ export default {
       players: (state) => state.lobby.players,
       playerId: (state) => state.lobby.playerId,
       gameInProgress: (state) => state.game.inProgress,
+      code: (state) => state.lobby.code,
     }),
     ...mapGetters({
       swatches: "lobby/colorSwatches",
@@ -141,6 +145,10 @@ export default {
 
     backToHome() {
       this.$router.replace({ name: "home" });
+    },
+
+    fetchPlayers() {
+      this.$socket.emit("lobby:fetch_players", this.code);
     },
   },
 };

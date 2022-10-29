@@ -87,16 +87,15 @@ export default {
     CountDown,
   },
 
-  created() {
-    // get turn
-    this.$socket.emit("game:get_turn");
-  },
+  async mounted() {
+    window.addEventListener("visibilitychange", this.getTurn);
 
-  mounted() {
     window.addEventListener("resize", this.getWindowDimensions);
-    this.$nextTick(() => {
-      this.getCanvasDimensions();
-    });
+    // wait for the canvas to be ready
+    await this.$nextTick();
+    // get the dimensions
+    this.getCanvasDimensions();
+
     if (this.isTurn) {
       this.showTurnNotification = true;
     }
@@ -104,6 +103,7 @@ export default {
 
   unmounted() {
     window.removeEventListener("resize", this.getWindowDimensions);
+    window.removeEventListener("visibilitychange", this.getTurn);
   },
 
   computed: {
@@ -169,6 +169,15 @@ export default {
       ).width;
       const digitRegex = /\d+/;
       this.canvasSize = digitRegex.exec(containerWidthStr)[0];
+    },
+
+    async getTurn() {
+      await this.$nextTick();
+      // only look if the window is visible
+      if (document.visibilityState === "visible") {
+        // get turn
+        this.$socket.emit("game:get_turn");
+      }
     },
   },
 };

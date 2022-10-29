@@ -1,10 +1,10 @@
 <template>
   <div>
     <modal :show="showExitConfirmation">
-      <template v-slot:title> Exit game? </template>
+      <template v-slot:title>End Game</template>
       <template v-slot:body>
-        Quitting will end the game for all players. Are you sure you want to
-        quit?
+        Quitting will end the game for all players.<br />Are you sure you want
+        to quit?
       </template>
       <template v-slot:action>
         <button class="btn btn-info" @click="showExitConfirmation = false">

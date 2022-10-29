@@ -21,7 +21,8 @@
       </div>
     </div>
     <div v-if="votes.length > 0" class="m-3 pt-3 border-t">
-      <div v-for="vote in votes" class="pl-5">
+      <div class="font-mono uppercase text-center text-xs">Votes</div>
+      <div v-for="vote in votes" class="pl-2">
         <font-awesome-icon icon="fa-check-to-slot" />
         {{ getPlayerName(vote) }}
       </div>

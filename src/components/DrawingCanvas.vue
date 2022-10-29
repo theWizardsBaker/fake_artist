@@ -84,6 +84,11 @@ export default {
       type: String,
       default: "#000000",
     },
+
+    isTimeUp: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {
@@ -125,6 +130,12 @@ export default {
       if (newVal) {
         // get anything we might have missed
         // this.getAllDrawings();
+      }
+    },
+    isTimeUp(newVal) {
+      if (newVal) {
+        this.hasMarked = true;
+        this.submitDrawing();
       }
     },
   },
@@ -210,14 +221,17 @@ export default {
     async submitDrawing() {
       this.submitting = true;
       await this.$nextTick();
-
       let lastStroke = this.$refs.VueCanvasDrawing.getAllStrokes().pop();
-      let convertedStrokes = await this.convertStrokes([lastStroke]);
+      // if the user hasn't marked, send empty coordinates
+      if (!this.hasMarked) {
+        lastStroke.coordinates = [];
+      }
+      let convertedStrokes = this.hasMarked
+        ? await this.convertStrokes([lastStroke])
+        : [];
       convertedStrokes[0].player = this.playerId;
       // send to other users
       this.$socket.emit("game:set_drawing", convertedStrokes[0]);
-
-      // let lastStroke = this.$refs.VueCanvasDrawing.strokes;
     },
 
     convertStrokes(strokes, enlarge = true) {

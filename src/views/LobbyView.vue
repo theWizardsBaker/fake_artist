@@ -25,18 +25,6 @@
               {{ $route.params.gameId }}
             </h3>
           </div>
-          <button
-            v-if="isLeader"
-            :class="[
-              'btn btn-success text-center mx-5 my-3 gap-2',
-              players.length >= this.minPlayers && 'animate-pulse',
-            ]"
-            :disabled="players.length < this.minPlayers"
-            @click="startGame()"
-          >
-            <span>Start Game</span>
-            <font-awesome-icon icon="fa-right-from-bracket" />
-          </button>
           <card>
             <div class="form-control mb-3">
               <label class="input-group">
@@ -52,6 +40,18 @@
                 />
               </label>
             </div>
+            <button
+              v-if="isLeader"
+              :class="[
+                'btn btn-success text-center mx-5 my-3 gap-2',
+                players.length >= this.minPlayers && 'animate-pulse',
+              ]"
+              :disabled="players.length < this.minPlayers"
+              @click="startGame()"
+            >
+              <span>Start Game</span>
+              <font-awesome-icon icon="fa-right-from-bracket" />
+            </button>
             <player-list showReady />
           </card>
         </div>
@@ -118,7 +118,7 @@ export default {
     return {
       color: "",
       ready: false,
-      minPlayers: 2,
+      minPlayers: 3,
     };
   },
 

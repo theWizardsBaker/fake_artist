@@ -4,18 +4,21 @@
       <div class="max-w-md">
         <div class="flex flex-col gap-5">
           <div class="p-4 text-center">
-            <h3 class="text-4xl">Vote</h3>
-            <div class="p-2">Select the fake artist</div>
+            <h3 class="text-5xl font-bold">Vote</h3>
           </div>
           <card>
             <div class="flex flex-col gap-5">
               <div
                 v-if="revealHiddenArtist && hiddenArtist"
-                class="text-center"
+                class="text-center border-2 p-2 rounded-md"
               >
-                <label class="font-bold">Fake Artist</label>
-                <div>{{ hiddenArtist.name }}</div>
+                <div>
+                  <label class="font-bold text-xl">Fake Artist</label>
+                  <font-awesome-icon icon="fa-paintbrush" />
+                </div>
+                <div class="text-2xl">{{ hiddenArtist.name }}</div>
               </div>
+              <div v-else class="p-2">Select the fake artist</div>
               <player-list
                 @selected="setSelection"
                 :selection="selection"
@@ -25,8 +28,8 @@
                 <game-exit-button v-if="revealHiddenArtist" />
                 <button
                   v-else
-                  class="btn btn-outline btn-wide mx-6"
-                  :disabled="!selection"
+                  class="btn btn-wide mx-6"
+                  :disabled="!selection || voted"
                   @click="vote"
                 >
                   Vote
@@ -82,6 +85,7 @@ export default {
     },
 
     vote() {
+      this.voted = true;
       this.$socket.emit("game:vote", this.player._id, this.selection);
     },
   },
@@ -89,7 +93,6 @@ export default {
   sockets: {
     "success:voted"(playerId) {
       this.selection = playerId;
-      this.voted = true;
       this.$socket.emit("game:voting");
     },
 

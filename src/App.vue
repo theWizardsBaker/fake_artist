@@ -13,7 +13,7 @@
         <div>
           <select
             v-model="theme"
-            class="select select-bordered select-xs w-full max-w-xs"
+            class="select select-bordered select-xs w-full max-w-xs capitalize"
           >
             <option v-for="(t, ind) in themes" :value="ind">
               {{ t }}
@@ -35,19 +35,35 @@
       showClose
     >
       <template v-slot:title> How To Play </template>
+      <template v-slot:body>
+        A group of players must work together to find the one
+        <b>fake artist</b> among them. The fake artist tries to avoid detection.
+        <br />
+        <br />
+        When the game begins, players see the round's random topic,
+        <i>e.g. "Apple"</i>. The exception is for the fake artist, they will
+        only see <i>"???"</i>.
+        <br />
+        <br />
+        Players take turns drawing single strokes on the canvas. After everyone
+        has drawn (2 times by default), players vote on who they think the fake
+        artist is.
+        <br />
+        <br />
+        The fake artist wins if they don't get the majority vote.
+        <br />
+        <br />
+        But even if the fake artist gets caught, they get one chance to guess
+        the topic. If they guess correctly, they win!
+      </template>
     </modal>
     <router-view v-slot="{ Component, route }">
-      <!--       <FadeInOut :appear="true" entry="center" exit="center" :duration="500">
- -->
       <component :is="Component" />
-      <!--       </FadeInOut>
- -->
     </router-view>
   </div>
 </template>
 
 <script>
-import { FadeInOut } from "vue3-transitions";
 import { mapState, mapGetters } from "vuex";
 import { RouterView } from "vue-router";
 import Navigation from "@/components/ui/Navigation.vue";
@@ -59,7 +75,6 @@ export default {
   components: {
     Navigation,
     RouterView,
-    FadeInOut,
     Modal,
   },
 

@@ -1,12 +1,11 @@
 <template>
   <div class="min-h-screen bg-base-200">
-    <count-down :start="startTurn" v-show="isTurn" />
+    <count-down :start="startTurn" v-if="isTurn" @done="isTimeUp = true" />
     <modal :show="showTurnNotification">
-      <template v-slot:title> You're the artist! </template>
+      <template v-slot:title> It's your turn! </template>
       <template v-slot:body>
-        It's your turn, pick a brush size and draw a single mark on the canvas.
-        <br />
-        When you are finished click the `Save` button.
+        You're the artist. Add to the drawing by making a single stroke on the
+        canvas.
       </template>
       <template v-slot:action>
         <label
@@ -25,7 +24,7 @@
       <game-topic />
     </div>
     <div class="flex justify-center">
-      <div class="flex flex-col lg:flex-row">
+      <div class="flex flex-col lg:flex-row items-start">
         <div class="flex-initial hidden md:block place-self-center text-center">
           <player-list showTurn />
           <game-exit-button />
@@ -39,6 +38,7 @@
           <drawing-canvas
             :canvasSize="canvasSize"
             :isTurn="isTurn && !isGameOver"
+            :isTimeUp="isTimeUp"
             :color="player.color"
           />
         </div>
@@ -87,15 +87,6 @@ export default {
     CountDown,
   },
 
-  // beforeRouteLeave (to, from , next) {
-  //   // const answer = window.confirm('Do you really want to leave? you have unsaved changes!')
-  //   // if (answer) {
-  //   //   next()
-  //   // } else {
-  //   //   next(false)
-  //   // }
-  //   alert("EAVING")
-  // },
   created() {
     // get turn
     this.$socket.emit("game:get_turn");
@@ -143,6 +134,7 @@ export default {
 
     isTurn(newVal) {
       if (newVal) {
+        this.isTimeUp = false;
         this.showTurnNotification = true;
       } else {
         this.startTurn = false;
@@ -162,6 +154,7 @@ export default {
       canvasSize: "400",
       showTurnNotification: false,
       startTurn: false,
+      isTimeUp: false,
     };
   },
 

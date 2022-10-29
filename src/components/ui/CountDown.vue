@@ -2,7 +2,7 @@
   <div
     :class="[
       'fixed z-90 md:bottom-8 bottom-16 right-6 radial-progress bg-accent text-accent-content border-4 border-accent text-4xl',
-      this.countDown <= 5 && 'animate-bounce bg-error border-error',
+      this.countDown <= 5 && 'bg-error border-error',
     ]"
     :style="{ '--value': +radialValue, '--size': '4rem' }"
   >
@@ -37,8 +37,9 @@ export default {
     },
     countDown(newVal, oldVal) {
       if (newVal !== oldVal && newVal == 0) {
-        clearInterval(this.countDownInterval);
         this.$emit("done");
+        clearInterval(this.countDownInterval);
+        console.log("DONE!");
       }
     },
   },
@@ -64,7 +65,6 @@ export default {
     setRadialValue() {
       const tick = 100 / this.timeLimit;
       const countDown = this.timeLimit - (this.timeLimit - this.countDown);
-      console.log(countDown);
       this.radialValue = countDown * tick;
     },
   },

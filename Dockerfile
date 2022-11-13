@@ -1,24 +1,41 @@
 FROM node:18-alpine as base
 
-# RUN addgroup --gid 1001 --system app && \
-#    adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app
 
-# USER app
+#Production base
+FROM base AS base-prod
+WORKDIR /build
+COPY package.json yarn.lock ./
+RUN yarn install --production
+COPY . .
+COPY --from=deps /build/node_modules ./node_modules/
+# build app for production with minification
+RUN yarn build
 
-# COPY requirements.txt .
 
-# RUN --mount=type=cache,target=/root/.cache/pip \
-#        pip install -r requirements.txt
-
-FROM base as deps
+#Develop base
+FROM base as base-dev
 WORKDIR /build
 COPY package.json yarn.lock ./
 RUN yarn install
 
-FROM base
+
+#Production
+FROM base-prod as prod
+WORKDIR /var/www/http/app
+# install simple http server for serving static content
+RUN yarn global add http-server
+COPY --from=base-prod /build/dist ./dist
+# serve application
+ENTRYPOINT ["http-server"]
+CMD ["-g", "--cors", "-p ${PORT}", "dist"]
+
+
+#Develop
+FROM base-dev as dev
 WORKDIR /var/www/http/app
 COPY . .
-COPY --from=deps /build/node_modules ./node_modules/
-
+COPY --from=base-dev /build/node_modules ./node_modules/
+# Run dev server
 ENTRYPOINT ["yarn"]
-CMD ["build"]
+
+

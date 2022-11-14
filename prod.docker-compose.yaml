@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  frontend:
+    container_name: frontend
+    build:
+      target: prod
+      context: .
+    command: ["-g", "--cors", "-p ${PORT}", "dist"]
+    ports:
+      - $PORT:$PORT
+    environment:
+      VITE_BACKEND_URL: $VITE_BACKEND_URL
+      VITE_STATIC_URL: $VITE_STATIC_URL

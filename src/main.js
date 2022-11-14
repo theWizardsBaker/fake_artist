@@ -20,9 +20,12 @@ app.use(router);
 
 app.use(store);
 
+const backend_url = import.meta.env.PROD ? "http://fakeartist.justin-letourneau.dev/backend/" : import.meta.env.VITE_BACKEND_URL
+console.log("BACKEND_URL", import.meta.env.VITE_BACKEND_URL)
+console.log("SOCKET IMPORT", backend_url)
 app.use(
   new VueSocketIO({
-    connection: SocketIO(import.meta.env.VITE_BACKEND_URL),
+    connection: SocketIO(backend_url),
     params: {
       type: ["websocket"],
     },

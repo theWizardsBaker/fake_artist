@@ -4,7 +4,7 @@ services:
     container_name: frontend
     build:
       #prod or dev
-      target: $TARGET
+      target: dev
       context: .
     command: ["dev", "--port", $PORT]
     ports:
@@ -13,6 +13,6 @@ services:
       - ./src/:/var/www/http/app/src
       - ./public/:/var/www/http/app/public
     environment:
-      VITE_BACKEND_URL: $BACKEND_URL
-      VITE_STATIC_URL: $STATIC_URL
       PORT: $PORT
+      VITE_BACKEND_URL: $VITE_BACKEND_URL
+      VITE_STATIC_URL: $VITE_STATIC_URL

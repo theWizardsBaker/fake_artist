@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-base-200">
+  <div class="min-h-screen bg-base-200 pt-10">
     <count-down :start="startTurn" v-if="isTurn" @done="isTimeUp = true" />
     <modal :show="showTurnNotification">
       <template v-slot:title> It's your turn! </template>
@@ -111,6 +111,8 @@ export default {
     if (this.isTurn) {
       this.showTurnNotification = true;
     }
+
+    window.scrollTo(0, 0);
   },
 
   unmounted() {

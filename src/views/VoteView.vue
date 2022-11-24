@@ -3,14 +3,13 @@
     <modal :show="showDirections">
       <template v-slot:title> Time to vote! </template>
       <template v-slot:body>
-        <b>All players</b> vote on who they think the fake artist is.
+        <b>Vote</b> for who you think the fake artist is.
         <br />
         The fake artist wins if they don't receive the <b>majority</b> vote.
         <br />
         <br />
         If the fake artist is caught, they get one chance to
-        <b>guess the topic</b> that was drawn. If they guess correctly, they
-        win!
+        <b>guess the topic</b>. If they guess correctly, they win!
       </template>
       <template v-slot:action>
         <label class="btn btn-info" @click="showDirections = false">
@@ -19,7 +18,7 @@
       </template>
     </modal>
     <!-- show players the topic -->
-    <h3 class="text-5xl font-bold text-center">Vote</h3>
+    <!-- <h3 class="text-5xl font-bold text-center">Vote</h3> -->
     <div class="flex justify-center">
       <div class="flex flex-col items-start">
         <div
@@ -34,7 +33,7 @@
         </div>
         <div class="text-center border-2 p-2 rounded-md place-self-center">
           <div>
-            <label class="font-bold text-xl mr-2">Fake Artist</label>
+            <label class="font-bold text-xl mr-2">Fake Artist Identity</label>
             <font-awesome-icon icon="fa-paintbrush" />
           </div>
           <h1

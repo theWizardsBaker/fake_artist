@@ -9,7 +9,7 @@
           :key="player._id"
           :showTurn="showTurn"
           :isSelectable="showSelect"
-          :selected="player._id === selection"
+          :selected="player._id === selected"
           @selected="playerSelected(player._id)"
         />
       </li>
@@ -63,7 +63,7 @@ export default {
   methods: {
     playerSelected(player) {
       if (this.showSelect) {
-        this.selected = player;
+        this.selected = this.selected === player ? null : player;
         this.$emit("selected", this.selected);
       }
     },

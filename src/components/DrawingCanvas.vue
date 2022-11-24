@@ -24,7 +24,7 @@
           :lineWidth="lineWidth"
           :color="color"
           :key="paths.length"
-          :initialImage="paths"
+          :initialImage="filteredPaths"
           lineCap="round"
           lineJoin="round"
           @mouseup="setMark"
@@ -86,6 +86,7 @@ export default {
     ...mapState({
       playerId: (state) => state.lobby.playerId,
       turn: (state) => state.game.playerTurn,
+      filteredPlayer: (state) => state.game.selectedPlayer,
     }),
 
     canvasLocked() {
@@ -94,6 +95,15 @@ export default {
 
     htmlCanvasSize() {
       return this.canvasSizes[this.size];
+    },
+
+    filteredPaths() {
+      return this.paths.filter((path) => {
+        if(this.filteredPlayer){
+          return path.player === this.filteredPlayer
+        }
+        return true
+      })
     },
   },
 
@@ -123,6 +133,10 @@ export default {
         this.submitDrawing();
       }
     },
+    filteredPaths(newVal, oldVal) {
+      this.isRedrawingCanvasSize = true;
+      setTimeout(() => this.isRedrawingCanvasSize = false, 100)
+    }
   },
 
   data() {
@@ -144,9 +158,6 @@ export default {
       this.paths.push(convertedStroke[0]);
       this.submitting = false;
       this.hasMarked = false;
-      // await this.$refs.VueCanvasDrawing.redraw();
-      // this.$nextTick(async () => {
-      // });
     },
     async "success:get_all_drawings"(drawings) {
       this.paths = [];

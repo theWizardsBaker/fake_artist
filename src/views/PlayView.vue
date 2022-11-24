@@ -26,7 +26,11 @@
     <div class="flex justify-center">
       <div class="flex flex-col lg:flex-row items-start">
         <div class="flex-initial hidden md:block place-self-center text-center">
-          <player-list showTurn />
+          <player-list
+            @selected="filterPlayer"
+            showTurn
+            :showSelect="!isTurn"
+            />
           <game-exit-button />
         </div>
         <div
@@ -46,7 +50,11 @@
           class="flex-auto place-self-center text-center"
           v-show="selectedDisplay === 1"
         >
-          <player-list showTurn />
+          <player-list
+            @selected="filterPlayer"
+            showTurn
+            :showSelect="!isTurn"
+            />
           <game-exit-button />
         </div>
       </div>
@@ -73,7 +81,7 @@ import PlayerList from "@/components/PlayerList.vue";
 import GameTopic from "@/components/GameTopic.vue";
 import DrawingCanvas from "@/components/DrawingCanvas.vue";
 import GameExitButton from "@/components/GameExitButton.vue";
-import { mapGetters, mapState } from "vuex";
+import { mapGetters, mapState, mapActions } from "vuex";
 
 export default {
   name: "PlayGame",
@@ -136,6 +144,7 @@ export default {
       if (newVal) {
         this.isTimeUp = false;
         this.showTurnNotification = true;
+        this.filterPlayer(null);
       } else {
         this.startTurn = false;
       }
@@ -159,6 +168,11 @@ export default {
   },
 
   methods: {
+
+    ...mapActions({
+      filterPlayer: "game/filterPlayer"
+    }),
+
     getWindowDimensions() {
       this.width = document.documentElement.clientWidth;
     },

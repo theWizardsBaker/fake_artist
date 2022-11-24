@@ -40,6 +40,7 @@
                 />
               </label>
             </div>
+            <player-list showReady />
             <button
               v-if="isLeader"
               :class="[
@@ -52,7 +53,6 @@
               <span>Start Game</span>
               <font-awesome-icon icon="fa-right-from-bracket" />
             </button>
-            <player-list showReady />
           </card>
         </div>
       </div>

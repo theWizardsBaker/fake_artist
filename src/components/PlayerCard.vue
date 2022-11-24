@@ -1,6 +1,6 @@
 <template>
-  <a :class="['w-full block', selected && 'active']">
-    <div class="flex items-center space-x-3" @click.default="select">
+  <a :class="['w-full block', selected && 'active']" @click.default="select">
+    <div class="flex items-center space-x-3" >
       <div>
         <h3 class="font-bold">{{ order + 1 }}</h3>
       </div>
@@ -69,15 +69,15 @@ export default {
     isTurn() {
       return this.order === this.playerTurn;
     },
-
-    select() {
-      this.$emit("selected");
-    },
   },
 
   methods: {
     getPlayerName(playerId) {
       return this.players.find((p) => p._id === playerId).name;
+    },
+
+    select() {
+      this.$emit("selected");
     },
   },
 };

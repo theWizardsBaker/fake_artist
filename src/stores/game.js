@@ -6,6 +6,7 @@ const DEFAULT_STATE = () => ({
   round: 0,
   maxRounds: 0,
   topic: null,
+  selectedPlayer: null
 });
 
 export default {
@@ -62,6 +63,9 @@ export default {
       // reset to default state
       state = DEFAULT_STATE();
     },
+    selectPlayer(state, player) {
+      state.selectedPlayer = player
+    }
   },
 
   actions: {
@@ -107,6 +111,11 @@ export default {
 
     endGame({ commit }) {
       commit("endGame");
+    },
+
+    filterPlayer({ commit }, player) {
+      console.log("HELLOOOOO", player)
+      commit("selectPlayer", player)
     },
   },
 };

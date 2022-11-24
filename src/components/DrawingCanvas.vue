@@ -2,6 +2,7 @@
   <div class="p-2 sm:p-5">
     <div class="flex flex-col gap-5">
       <drawing-canvas-buttons
+        v-if="enableDrawing"
         :disabled="!hasMarked || !isTurn"
         :loading="submitting"
         @submit="submitDrawing"
@@ -48,6 +49,11 @@ export default {
   },
 
   props: {
+    enableDrawing: {
+      type: Boolean,
+      default: true,
+    },
+
     lockCanvas: {
       type: Boolean,
       default: false,
@@ -99,11 +105,11 @@ export default {
 
     filteredPaths() {
       return this.paths.filter((path) => {
-        if(this.filteredPlayer){
-          return path.player === this.filteredPlayer
+        if (this.filteredPlayer) {
+          return path.player === this.filteredPlayer;
         }
-        return true
-      })
+        return true;
+      });
     },
   },
 
@@ -135,8 +141,8 @@ export default {
     },
     filteredPaths(newVal, oldVal) {
       this.isRedrawingCanvasSize = true;
-      setTimeout(() => this.isRedrawingCanvasSize = false, 100)
-    }
+      setTimeout(() => (this.isRedrawingCanvasSize = false), 100);
+    },
   },
 
   data() {

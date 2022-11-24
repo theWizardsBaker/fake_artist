@@ -1,11 +1,46 @@
 <template>
-  <main>
+  <div class="min-h-screen bg-base-200">
+    <!-- show players the topic -->
+    <div class="flex justify-center pt-5">
+      <h3 class="text-5xl font-bold">Vote</h3>
+    </div>
+    <div class="flex justify-center">
+      <div class="flex flex-col items-start">
+        <div
+          class="flex-auto mb-10 mt-5"
+          ref="canvas"
+          :style="{ width: `${canvasSize}px`, height: `${canvasSize}px` }"
+        >
+          <drawing-canvas :enableDrawing="false" :canvasSize="canvasSize" />
+        </div>
+        <div
+          class="flex-initial place-self-center lg:place-self-start lg:pt-5 text-center"
+          :class="[`w-[${canvasSize}px]`]"
+        >
+          <player-list
+            @selected="setSelection"
+            :selection="selection"
+            :showSelect="!voted"
+            :directions="playerDirection"
+          />
+          <game-exit-button v-if="revealHiddenArtist" />
+          <button
+            v-else="revealHiddenArtist"
+            class="btn btn-wide mx-6 m-4"
+            :disabled="!selection || voted"
+            @click="vote"
+          >
+            Vote
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--   <main>
     <base-page>
       <div class="max-w-md">
         <div class="flex flex-col gap-5">
-          <div class="p-4 text-center">
-            <h3 class="text-5xl font-bold">Vote</h3>
-          </div>
           <card>
             <div class="flex flex-col gap-5">
               <div
@@ -40,7 +75,7 @@
         </div>
       </div>
     </base-page>
-  </main>
+  </main> -->
 </template>
 
 <script>
@@ -48,12 +83,14 @@ import PlayerList from "@/components/PlayerList.vue";
 import GameExitButton from "@/components/GameExitButton.vue";
 import BasePage from "@/components/ui/BasePage.vue";
 import Card from "@/components/ui/Card.vue";
+import DrawingCanvas from "@/components/DrawingCanvas.vue";
 import { mapGetters, mapState } from "vuex";
 
 export default {
   name: "VotePage",
 
   components: {
+    DrawingCanvas,
     PlayerList,
     BasePage,
     Card,
@@ -81,6 +118,8 @@ export default {
       selection: null,
       voted: false,
       revealHiddenArtist: false,
+      playerDirection: "Select the fake artist",
+      canvasSize: "300",
     };
   },
 

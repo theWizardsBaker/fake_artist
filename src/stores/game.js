@@ -6,7 +6,7 @@ const DEFAULT_STATE = () => ({
   round: 0,
   maxRounds: 0,
   topic: null,
-  selectedPlayer: null
+  selectedPlayer: null,
 });
 
 export default {
@@ -64,8 +64,8 @@ export default {
       state = DEFAULT_STATE();
     },
     selectPlayer(state, player) {
-      state.selectedPlayer = player
-    }
+      state.selectedPlayer = player;
+    },
   },
 
   actions: {
@@ -114,8 +114,8 @@ export default {
     },
 
     filterPlayer({ commit }, player) {
-      console.log("HELLOOOOO", player)
-      commit("selectPlayer", player)
+      console.log("HELLOOOOO", player);
+      commit("selectPlayer", player);
     },
   },
 };

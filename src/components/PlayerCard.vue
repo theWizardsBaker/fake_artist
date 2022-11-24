@@ -1,6 +1,6 @@
 <template>
   <a :class="['w-full block', selected && 'active']" @click.default="select">
-    <div class="flex items-center space-x-3" >
+    <div class="flex items-center space-x-3">
       <div>
         <h3 class="font-bold">{{ order + 1 }}</h3>
       </div>
@@ -21,9 +21,11 @@
       </div>
     </div>
     <div v-if="votes.length > 0" class="m-3 pt-3 border-t">
-      <div class="font-mono uppercase text-center text-xs">Votes</div>
-      <div v-for="vote in votes" class="pl-2">
+      <div class="font-mono uppercase text-center text-xs">
         <font-awesome-icon icon="fa-check-to-slot" />
+        Votes
+      </div>
+      <div v-for="vote in votes" class="pt-2">
         {{ getPlayerName(vote) }}
       </div>
     </div>

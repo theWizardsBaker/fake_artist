@@ -20,8 +20,10 @@ app.use(router);
 
 app.use(store);
 
-const backend_url = import.meta.env.PROD ? "fa.justin-letourneau.dev" : import.meta.env.VITE_BACKEND_URL;
-const path = import.meta.env.PROD ? '/backend/socket.io' : '/socket.io';
+const backend_url = import.meta.env.PROD
+  ? "fa.justin-letourneau.dev"
+  : import.meta.env.VITE_BACKEND_URL;
+const path = import.meta.env.PROD ? "/backend/socket.io" : "/socket.io";
 
 app.use(
   new VueSocketIO({

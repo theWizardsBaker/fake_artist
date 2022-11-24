@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h3 class="text-center font-bold py-3">Players</h3>
+    <h3 class="text-center font-bold py-3 text-xl">Players</h3>
+    <p class="p-3 pt-0">{{ directions }}</p>
     <ul class="menu p-2 rounded-box bg-secondary text-secondary-content">
       <li v-for="(player, playerInd) in players">
         <player-card
@@ -9,7 +10,7 @@
           :key="player._id"
           :showTurn="showTurn"
           :isSelectable="showSelect"
-          :selected="player._id === selected"
+          :selected="showSelect && player._id === selected"
           @selected="playerSelected(player._id)"
         />
       </li>
@@ -34,6 +35,10 @@ export default {
     },
 
     selection: {
+      type: String,
+    },
+
+    directions: {
       type: String,
     },
   },

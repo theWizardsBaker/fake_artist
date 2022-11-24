@@ -25,12 +25,15 @@
     </div>
     <div class="flex justify-center">
       <div class="flex flex-col lg:flex-row items-start">
-        <div class="flex-initial hidden md:block place-self-center text-center">
+        <div
+          class="flex-initial hidden md:block place-self-center lg:place-self-start lg:pt-5 text-center"
+        >
           <player-list
             @selected="filterPlayer"
             showTurn
             :showSelect="!isTurn"
-            />
+            :directions="playerDirection"
+          />
           <game-exit-button />
         </div>
         <div
@@ -46,15 +49,13 @@
             :color="player.color"
           />
         </div>
-        <div
-          class="flex-auto place-self-center text-center"
-          v-show="selectedDisplay === 1"
-        >
+        <div class="flex-auto place-self-start text-center">
           <player-list
             @selected="filterPlayer"
             showTurn
             :showSelect="!isTurn"
-            />
+            :directions="playerDirection"
+          />
           <game-exit-button />
         </div>
       </div>
@@ -164,13 +165,13 @@ export default {
       showTurnNotification: false,
       startTurn: false,
       isTimeUp: false,
+      playerDirection: "Select a player to see only their drawings",
     };
   },
 
   methods: {
-
     ...mapActions({
-      filterPlayer: "game/filterPlayer"
+      filterPlayer: "game/filterPlayer",
     }),
 
     getWindowDimensions() {

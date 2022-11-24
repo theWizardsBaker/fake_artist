@@ -49,7 +49,10 @@
             :color="player.color"
           />
         </div>
-        <div class="flex-auto place-self-start text-center">
+        <div
+          class="flex-auto place-self-start text-center"
+          v-show="selectedDisplay === 1"
+        >
           <player-list
             @selected="filterPlayer"
             showTurn

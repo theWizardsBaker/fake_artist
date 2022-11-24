@@ -114,7 +114,6 @@ export default {
     },
 
     filterPlayer({ commit }, player) {
-      console.log("HELLOOOOO", player);
       commit("selectPlayer", player);
     },
   },

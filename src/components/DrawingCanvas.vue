@@ -82,6 +82,7 @@ export default {
 
   async mounted() {
     window.addEventListener("visibilitychange", this.getAllDrawings);
+    this.resizeCanvas(this.canvasSize);
   },
 
   unmounted() {
@@ -115,6 +116,7 @@ export default {
 
   watch: {
     canvasSize(newVal, oldVal) {
+      console.log(newVal, oldVal);
       if (newVal !== oldVal) {
         if (this.$refs.VueCanvasDrawing) {
           this.paths = this.$refs.VueCanvasDrawing.getAllStrokes();
@@ -195,8 +197,9 @@ export default {
     resizeCanvas: debounce(function (size) {
       // find the right fit for the canvas
       for (let i = 0; i < this.canvasSizes.length; i++) {
-        const thisCanvasSize = this.canvasSizes[i];
-        if (size <= thisCanvasSize) {
+        // const thisCanvasSize = this.canvasSizes[i];
+        console.log(this.canvasSizes[i], size);
+        if (size <= this.canvasSizes[i]) {
           continue;
         }
         this.size = i;

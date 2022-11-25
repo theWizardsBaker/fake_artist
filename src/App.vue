@@ -122,8 +122,8 @@ export default {
 
   data() {
     return {
-      theme: 2,
-      themes: ["business", "coffee", "cupcake", "pastel", "winter"],
+      theme: 3,
+      themes: ["acid", "black", "business", "cupcake", "pastel"],
       showHowToPlay: false,
     };
   },

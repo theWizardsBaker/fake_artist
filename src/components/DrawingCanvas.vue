@@ -124,6 +124,7 @@ export default {
         this.resizeCanvas(newVal);
       }
     },
+
     isRedrawingCanvasSize(newVal) {
       if (newVal === false) {
         this.$nextTick(async () => {
@@ -134,21 +135,18 @@ export default {
         });
       }
     },
+
     isTimeUp(newVal) {
       if (newVal) {
-        this.hasMarked = true;
+        this.setMark();
         // emit a mouseup event so that the drawing is stopped
         let canvas = document.getElementById(
           this.$refs.VueCanvasDrawing.canvasId
         );
-        canvas.onmouseup();
+        canvas.dispatchEvent(new Event("mouseup"));
         // submit the drawing
         this.submitDrawing();
       }
-    },
-    filteredPaths(newVal, oldVal) {
-      this.isRedrawingCanvasSize = true;
-      setTimeout(() => (this.isRedrawingCanvasSize = false), 100);
     },
   },
 

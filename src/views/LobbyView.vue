@@ -1,22 +1,17 @@
 <template>
   <main>
-    <button
-      class="btn btn-square btn-info btn-outline text-center rounded-2xl m-5 gap-2 sm:absolute sm:right-0 float-right sm:block hidden"
-      @click="backToHome()"
-    >
-      <font-awesome-icon icon="fa-x" />
-    </button>
+    <modal :show="showExitConfirmation">
+      <template v-slot:title> Leave Lobby? </template>
+      <template v-slot:action>
+        <label class="btn btn-info" @click="showExitConfirmation = false">
+          Stay
+        </label>
+        <label class="btn btn-error" @click="backToHome()"> Leave </label>
+      </template>
+    </modal>
     <base-page>
       <div class="max-w-md">
         <div class="flex flex-col">
-          <div class="sm:relative m-2">
-            <button
-              class="btn btn-square btn-info btn-outline text-center rounded-2xl m-5 gap-2 sm:absolute sm:right-0 float-right sm:hidden"
-              @click="backToHome()"
-            >
-              <font-awesome-icon icon="fa-x" />
-            </button>
-          </div>
           <div class="p-4 text-center text-primary-content">
             <label>Game Code</label>
             <h3
@@ -42,16 +37,22 @@
             </div>
             <player-list showReady />
             <button
+              class="btn btn-info btn-outline text-center rounded-2xl m-5 gap-2"
+              @click="showExitConfirmation = true"
+            >
+              Leave Game Lobby
+              <font-awesome-icon icon="fa-right-from-bracket" />
+            </button>
+            <button
               v-if="isLeader"
               :class="[
-                'btn btn-success text-center mx-5 my-3 gap-2',
+                'btn btn-success text-center mx-5 my-3 rounded-2xl',
                 players.length >= this.minPlayers && 'animate-pulse',
               ]"
               :disabled="players.length < this.minPlayers"
               @click="startGame()"
             >
               <span>Start Game</span>
-              <font-awesome-icon icon="fa-right-from-bracket" />
             </button>
           </card>
         </div>
@@ -61,6 +62,7 @@
 </template>
 
 <script>
+import Modal from "@/components/ui/Modal.vue";
 import Card from "@/components/ui/Card.vue";
 import BasePage from "@/components/ui/BasePage.vue";
 import PlayerList from "@/components/PlayerList.vue";
@@ -88,6 +90,7 @@ export default {
   },
 
   components: {
+    Modal,
     PlayerList,
     VSwatches,
     BasePage,
@@ -123,6 +126,7 @@ export default {
       color: "",
       ready: false,
       minPlayers: 3,
+      showExitConfirmation: false,
     };
   },
 

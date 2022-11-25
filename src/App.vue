@@ -123,7 +123,7 @@ export default {
   data() {
     return {
       theme: 2,
-      themes: ["business", "cupcake", "pastel", "winter"],
+      themes: ["business", "coffee", "cupcake", "pastel", "winter"],
       showHowToPlay: false,
     };
   },

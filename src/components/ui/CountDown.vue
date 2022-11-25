@@ -39,7 +39,6 @@ export default {
       if (newVal !== oldVal && newVal == 0) {
         this.$emit("done");
         clearInterval(this.countDownInterval);
-        console.log("DONE!");
       }
     },
   },

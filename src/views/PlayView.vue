@@ -8,15 +8,7 @@
         canvas.
       </template>
       <template v-slot:action>
-        <label
-          class="btn btn-info"
-          @click="
-            showTurnNotification = false;
-            startTurn = true;
-          "
-        >
-          Okay!
-        </label>
+        <label class="btn btn-info" @click="confirmTurnStart"> Okay! </label>
       </template>
     </modal>
     <!-- show players the topic -->
@@ -47,6 +39,7 @@
             :isTurn="isTurn && !isGameOver"
             :isTimeUp="isTimeUp"
             :color="player.color"
+            :canvasLocked="unlockedCanvas"
           />
         </div>
         <div
@@ -138,6 +131,10 @@ export default {
     isTurn() {
       return this.player.order === this.playerTurn;
     },
+
+    unlockedCanvas() {
+      return this.isTurn && this.startTurn;
+    },
   },
 
   watch: {
@@ -198,6 +195,12 @@ export default {
         // get turn
         this.$socket.emit("game:get_turn");
       }
+    },
+
+    confirmTurnStart() {
+      this.showTurnNotification = false;
+      // delay turn start so that an accidental click doesn't happen
+      setTimeout(() => (this.startTurn = true), 50);
     },
   },
 };

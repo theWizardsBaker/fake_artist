@@ -5,11 +5,10 @@
       <template v-slot:body>
         <b>Vote</b> for who you think the fake artist is.
         <br />
-        The fake artist wins if they don't receive the <b>majority</b> vote.
         <br />
-        <br />
-        If the fake artist is caught, they get one chance to
-        <b>guess the topic</b>. If they guess correctly, they win!
+        The fake artist wins if they don't receive the <b>majority</b> vote,
+        however, f the fake artist is caught, they get one chance to
+        <b>guess the topic</b>. If they guess correctly, they <i>win</i>!
       </template>
       <template v-slot:action>
         <label class="btn btn-info" @click="showDirections = false">
@@ -29,9 +28,10 @@
           <drawing-canvas
             :enableDrawing="false"
             :canvasSize="`${canvasSize}`"
+            lockCanvas
           />
         </div>
-        <div class="text-center border-2 p-2 rounded-md place-self-center">
+        <div class="text-center p-2 rounded-md place-self-center">
           <div>
             <label class="font-bold text-xl mr-2">Fake Artist Identity</label>
             <font-awesome-icon icon="fa-paintbrush" />
@@ -56,7 +56,7 @@
             />
             <game-exit-button v-if="revealHiddenArtist" />
             <button
-              v-else="revealHiddenArtist"
+              v-else
               class="btn btn-wide mx-6 m-4"
               :disabled="!selection || voted"
               @click="vote"

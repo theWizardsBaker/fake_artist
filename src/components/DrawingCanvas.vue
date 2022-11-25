@@ -116,7 +116,6 @@ export default {
 
   watch: {
     canvasSize(newVal, oldVal) {
-      console.log(newVal, oldVal);
       if (newVal !== oldVal) {
         if (this.$refs.VueCanvasDrawing) {
           this.paths = this.$refs.VueCanvasDrawing.getAllStrokes();
@@ -138,6 +137,12 @@ export default {
     isTimeUp(newVal) {
       if (newVal) {
         this.hasMarked = true;
+        // emit a mouseup event so that the drawing is stopped
+        let canvas = document.getElementById(
+          this.$refs.VueCanvasDrawing.canvasId
+        );
+        canvas.onmouseup();
+        // submit the drawing
         this.submitDrawing();
       }
     },
@@ -167,11 +172,13 @@ export default {
       this.submitting = false;
       this.hasMarked = false;
     },
+
     async "success:get_all_drawings"(drawings) {
       this.paths = [];
       const convertedStrokes = await this.convertStrokes(drawings, false);
       this.paths = convertedStrokes;
     },
+
     "error:set_drawing"(path) {
       this.submitting = false;
     },
@@ -198,7 +205,6 @@ export default {
       // find the right fit for the canvas
       for (let i = 0; i < this.canvasSizes.length; i++) {
         // const thisCanvasSize = this.canvasSizes[i];
-        console.log(this.canvasSizes[i], size);
         if (size <= this.canvasSizes[i]) {
           continue;
         }
@@ -215,6 +221,10 @@ export default {
     }, 1000),
 
     async submitDrawing() {
+      // if the drawing has already been submitted, don't submit
+      if (this.submitting) {
+        return false;
+      }
       this.submitting = true;
       await this.$nextTick();
       let lastStroke = this.$refs.VueCanvasDrawing.getAllStrokes().pop();

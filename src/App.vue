@@ -10,7 +10,8 @@
         </div>
       </template>
       <template v-slot:right>
-        <div>
+        <label class="inline-block text-xs pt-2">Theme</label>
+        <div class="pt-0.5">
           <select
             v-model="theme"
             class="select select-bordered select-xs w-full max-w-xs capitalize"
@@ -122,7 +123,7 @@ export default {
   data() {
     return {
       theme: 2,
-      themes: ["autumn", "business", "cupcake", "pastel"],
+      themes: ["business", "cupcake", "pastel", "winter"],
       showHowToPlay: false,
     };
   },

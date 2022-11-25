@@ -11,7 +11,7 @@
       >
         ✕
       </label>
-      <h3 class="font-bold text-lg">
+      <h3 class="font-bold text-xl">
         <slot name="title"></slot>
       </h3>
       <p class="py-4">

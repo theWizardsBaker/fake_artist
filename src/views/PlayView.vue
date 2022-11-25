@@ -41,6 +41,9 @@
             :color="player.color"
             :canvasLocked="unlockedCanvas"
           />
+          <div class="text-center md:hidden" v-show="!isTurn">
+            {{ currentPlayer.name }} is drawing
+          </div>
         </div>
         <div
           class="flex-auto place-self-start text-center"
@@ -134,6 +137,10 @@ export default {
 
     unlockedCanvas() {
       return this.isTurn && this.startTurn;
+    },
+
+    currentPlayer() {
+      return this.players[this.playerTurn];
     },
   },
 

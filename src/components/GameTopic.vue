@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center pb-6">
     <h1
-      class="font-medium leading-tight text-4xl border-2 border-primary-content p-3 m-3 text-center text-primary-content rounded-2xl"
+      class="font-medium leading-tight text-4xl border-2 border-base-content p-3 m-3 text-center text-base-content rounded-2xl"
     >
       {{ topic }}
     </h1>

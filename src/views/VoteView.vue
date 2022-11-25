@@ -1,13 +1,13 @@
 <template>
   <div class="min-h-screen bg-base-200 pt-10">
     <modal :show="showDirections">
-      <template v-slot:title> Time to vote! </template>
+      <template v-slot:title>Time to vote!</template>
       <template v-slot:body>
         <b>Vote</b> for who you think the fake artist is.
         <br />
         <br />
         The fake artist wins if they don't receive the <b>majority</b> vote,
-        however, f the fake artist is caught, they get one chance to
+        however, if the fake artist is caught, they get <i>one</i> chance to
         <b>guess the topic</b>. If they guess correctly, they <i>win</i>!
       </template>
       <template v-slot:action>
@@ -37,7 +37,7 @@
             <font-awesome-icon icon="fa-paintbrush" />
           </div>
           <h1
-            class="font-medium leading-tight text-4xl border-2 border-primary-content p-3 m-3 text-center text-primary-content rounded-2xl"
+            class="font-medium leading-tight text-4xl border-2 border-base-content p-3 m-3 text-center text-base-content rounded-2xl"
           >
             <div class="text-2xl">
               {{

@@ -2,14 +2,20 @@
   <main>
     <base-page>
       <div class="max-w-md">
-        <div class="flex justify-center items-center mr-1 gap-2">
-          <h1 class="text-5xl font-bold handwriting py-5 text-primary-content">
-            Fake Artist
-          </h1>
-          <font-awesome-icon
-            icon="fa-paintbrush"
-            class="fa-2xl text-primary-content"
-          />
+        <div>
+          <div
+            class="flex justify-center items-center gap-2 bg-primary rounded-3xl mx-10 mb-8"
+          >
+            <h1
+              class="text-5xl font-bold handwriting py-5 text-primary-content"
+            >
+              Fake Artist
+            </h1>
+            <font-awesome-icon
+              icon="fa-paintbrush"
+              class="fa-2xl text-primary-content"
+            />
+          </div>
         </div>
         <card>
           <div class="flex flex-col w-full border-opacity-50">

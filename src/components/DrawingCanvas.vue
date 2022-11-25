@@ -137,7 +137,7 @@ export default {
     },
 
     isTimeUp(newVal) {
-      if (newVal) {
+      if (newVal && this.isTurn) {
         this.setMark();
         // emit a mouseup event so that the drawing is stopped
         let canvas = document.getElementById(

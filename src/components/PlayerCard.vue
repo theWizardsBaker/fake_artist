@@ -14,7 +14,7 @@
         <div class="font-bold">{{ name }}</div>
       </div>
       <div class="flex-auto text-right" v-if="showTurn">
-        <button class="btn btn-xs btn-primary gap-2" v-show="isTurn">
+        <button class="btn btn-xs btn-accent gap-2" v-show="isTurn">
           Artist
           <font-awesome-icon icon="fa-paintbrush" />
         </button>

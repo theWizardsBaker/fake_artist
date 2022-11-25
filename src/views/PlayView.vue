@@ -56,6 +56,11 @@
         </div>
       </div>
     </div>
+    <toast class="animate__fadeInRight">
+      <template v-slot:body>
+        It's not your turn
+      </template>
+    </toast>
     <!-- Bottom buttons on mobile devices -->
     <div class="btm-nav btm-nav-sm md:hidden">
       <button
@@ -72,6 +77,7 @@
 </template>
 
 <script>
+import Toast from "@/components/ui/Toast.vue";
 import Modal from "@/components/ui/Modal.vue";
 import CountDown from "@/components/ui/CountDown.vue";
 import PlayerList from "@/components/PlayerList.vue";
@@ -84,6 +90,7 @@ export default {
   name: "PlayGame",
 
   components: {
+    Toast,
     PlayerList,
     GameTopic,
     DrawingCanvas,

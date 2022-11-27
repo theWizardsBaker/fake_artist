@@ -12,10 +12,10 @@
     <base-page>
       <div class="max-w-md">
         <div class="flex flex-col">
-          <div class="p-4 text-center text-primary-content">
+          <div class="p-4 text-center text-base-content">
             <label>Game Code</label>
             <h3
-              class="font-medium text-6xl my-3 border-2 border-primary-content p-3 rounded-2xl"
+              class="font-medium text-6xl my-3 border-2 border-base-content p-3 rounded-2xl"
             >
               {{ $route.params.gameId }}
             </h3>

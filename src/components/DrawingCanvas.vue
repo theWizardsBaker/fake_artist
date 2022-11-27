@@ -8,10 +8,11 @@
         @submit="submitDrawing"
         @undo="undoDrawing"
         @brushSize="brushSize"
+        class="drawing-button"
       />
       <div class="flex justify-center items-center">
         <button
-          v-if="isRedrawingCanvasSize"
+          v-if="isRedrawingCanvasSize || isLoadingDrawing"
           class="loading btn btn-outline btn-xl mt-10"
         >
           LOADING
@@ -97,7 +98,12 @@ export default {
     }),
 
     canvasLocked() {
-      return !this.isTurn || this.hasMarked || this.lockCanvas;
+      return (
+        !this.isTurn ||
+        this.hasMarked ||
+        this.lockCanvas ||
+        this.isLoadingDrawing
+      );
     },
 
     htmlCanvasSize() {
@@ -126,9 +132,10 @@ export default {
     },
 
     isRedrawingCanvasSize(newVal) {
-      if (newVal === false) {
+      const canvas = this.$refs.VueCanvasDrawing;
+      if (newVal === false && canvas) {
         this.$nextTick(async () => {
-          let c = document.getElementById(this.$refs.VueCanvasDrawing.canvasId);
+          let c = document.getElementById(canvas.canvasId);
           let d = c.getContext("2d");
           let scale = this.size / this.baseSize;
           d.scale(1, 1);
@@ -160,6 +167,7 @@ export default {
       submitting: false,
       paths: [],
       lineWidth: 0,
+      isLoadingDrawing: true,
     };
   },
 
@@ -175,6 +183,7 @@ export default {
       this.paths = [];
       const convertedStrokes = await this.convertStrokes(drawings, false);
       this.paths = convertedStrokes;
+      this.isLoadingDrawing = false;
     },
 
     "error:set_drawing"(path) {
@@ -184,7 +193,9 @@ export default {
 
   methods: {
     setMark() {
-      this.hasMarked = true;
+      if (!this.canvasLocked) {
+        this.hasMarked = true;
+      }
     },
 
     brushSize(size) {
@@ -305,3 +316,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.drawing-buttons {
+  min-width: 600px;
+}
+</style>

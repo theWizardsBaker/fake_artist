@@ -23,18 +23,23 @@
       </div>
       <div class="form-control">
         <label class="label justify-center">
-          <span class="label-text">Touch Offset</span>
+          <span class="label-text gap-3">
+            Touch Offset
+            <div class="tooltip" data-tip="Moves brush away from origin. Makes drawing on mobile easier">
+              <font-awesome-icon icon="circle-info" />
+            </div>
+          </span>
         </label>
         <div class="btn-group rounded-2xl">
           <div
             v-for="(offset, offsetInd) in offsetPositions"
             :class="[
-              'btn btn-sm sm:btn-md',
+              'btn btn-sm sm:btn-md offset-icons',
               selectedOffset === offsetInd && 'btn-active',
             ]"
             @click="selectOffset(offsetInd)"
           >
-            <font-awesome-icon icon="fa-circle" />
+            <font-awesome-icon :icon="offsetIcons[offsetInd]" />
           </div>
         </div>
       </div>
@@ -97,6 +102,7 @@ export default {
       brushSizes: [3, 5, 7],
       selectedOffset: 1,
       offsetPositions: ["left", "none", "right"],
+      offsetIcons: ['fa-arrow-right', 'fa-minus', 'fa-arrow-right'],
       submitting: false,
     };
   },
@@ -130,3 +136,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.offset-icons:last-child svg{
+  rotate: -45deg;
+}
+.offset-icons:first-child svg{
+  rotate: 225deg;
+}
+</style>

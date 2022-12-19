@@ -8,6 +8,7 @@
         @submit="submitDrawing"
         @undo="undoDrawing"
         @brushSize="brushSize"
+        @offsetPosition="offsetPosition"
         class="drawing-button"
       />
       <div class="flex justify-center items-center">
@@ -17,7 +18,7 @@
         >
           LOADING
         </button>
-        <vue-drawing-canvas
+        <vue-canvas
           v-else
           ref="VueCanvasDrawing"
           :height="htmlCanvasSize"
@@ -29,6 +30,8 @@
           :initialImage="filteredPaths"
           lineCap="round"
           lineJoin="round"
+          @mousedown="startMark"
+          @touchstart="startMark"
           @mouseup="setMark"
           @touchend="setMark"
         />
@@ -40,12 +43,14 @@
 <script>
 import DrawingCanvasButtons from "./DrawingCanvasButtons.vue";
 import { debounce } from "debounce";
-import VueDrawingCanvas from "vue-drawing-canvas";
+// import VueDrawingCanvas from "vue-drawing-canvas";
+import VueCanvas from "@/components/ui/Canvas.vue";
 import { mapState } from "vuex";
 
 export default {
   components: {
-    VueDrawingCanvas,
+    // VueDrawingCanvas,
+    VueCanvas,
     DrawingCanvasButtons,
   },
 
@@ -155,6 +160,7 @@ export default {
         this.submitDrawing();
       }
     },
+
   },
 
   data() {
@@ -168,6 +174,12 @@ export default {
       paths: [],
       lineWidth: 0,
       isLoadingDrawing: true,
+      offset: 'none',
+      offsetTranslations: {
+        left: [-25, -25],
+        right: [25, -25],
+        none: [0, 0]
+      }
     };
   },
 
@@ -193,6 +205,26 @@ export default {
 
   methods: {
     setMark() {
+      // const canvas = document.getElementById(
+      //   this.$refs.VueCanvasDrawing.canvasId
+      // );
+
+      // console.log('ALL STROKES', this.$refs.VueCanvasDrawing.getAllStrokes())
+      // let allStrokes = this.$refs.VueCanvasDrawing.getAllStrokes()
+      // let lastStroke = allStrokes.pop();
+      // console.log(lastStroke)
+      // this.$refs.VueCanvasDrawing.reset()
+
+      // this.$refs.VueCanvasDrawing.getAllStrokes().push(lastStroke)
+
+      // const context = canvas.getContext("2d");
+      // context.translate(this.offsetTranslations[this.offset][0] * -1, this.offsetTranslations[this.offset][1] * -1)
+
+      // canvas.redraw();
+      // get the 2d context
+      // context.restore();
+      // context.setTransform(1, 0, 0, 1, 0, 0);
+
       if (!this.canvasLocked) {
         this.hasMarked = true;
       }
@@ -200,6 +232,62 @@ export default {
 
     brushSize(size) {
       this.lineWidth = size;
+    },
+
+    offsetPosition(offset) {
+      this.offset = offset;
+    },
+
+    startMark() {
+
+      // this.isLoadingDrawing = true;
+      
+      if(this.$refs.VueCanvasDrawing) {
+        // get the canvas
+        // const canvas = document.getElementById(
+        //   this.$refs.VueCanvasDrawing.canvasId
+        // );
+        // get the 2d context
+        // const context = canvas.getContext("2d");
+        // context.save();
+        // if we have an old set, reset to 0
+        // if(oldOffset){
+        //   // translate back to center
+        //   let x = this.offsetTranslations[oldOffset][0] * -1;
+        //   let y = this.offsetTranslations[oldOffset][1] * -1;
+        //   context.translate(x, y)
+        // }
+        // context.translate(this.offsetTranslations[this.offset][0], this.offsetTranslations[this.offset][1])
+
+        // // convert all the paths to use the offset
+        // const convertedStrokes = this.paths.map(async (s) => {
+        //   const convertedValues = await this.convertPoints(
+        //     this.htmlCanvasSize,
+        //     this.htmlCanvasSize,
+        //     [0,0],
+        //     s,
+        //   );
+        //   s.from = convertedValues.from;
+        //   s.coordinates = convertedValues.coordinates;
+        //   return s;
+        // });
+
+        // // wait for all the conversions to be done
+        // const strokes = await Promise.all(convertedStrokes)
+        // context.transform(1, 0, 1, 0, .2, .2);
+
+        // console.log(JSON.parse(JSON.stringify(this.paths)))
+        // console.log(JSON.parse(JSON.stringify(strokes)))
+
+        // this.paths = convertedStrokes;
+
+           // this.$nextTick();
+
+        // })
+
+      }
+
+      // this.isLoadingDrawing = false;
     },
 
     undoDrawing() {
@@ -255,24 +343,31 @@ export default {
       const end = enlarge ? this.htmlCanvasSize : this.canvasSizes[0];
 
       return new Promise((resolve, reject) => {
-        if (this.htmlCanvasSize !== this.canvasSizes[0]) {
-          const convertedStrokes = strokes.map(async (s) => {
-            const convertedValues = await this.convertPoints(start, end, s);
-            s.from = convertedValues.from;
-            s.coordinates = convertedValues.coordinates;
-            return s;
-          });
-          // wait for all the conversions to be done
-          Promise.all(convertedStrokes).then((data) => {
-            resolve(data);
-          });
-        } else {
+        if (this.htmlCanvasSize === this.canvasSizes[0]) {
           resolve(strokes);
         }
+
+        const convertedStrokes = strokes.map(async (s) => {
+          const convertedValues = await this.convertPoints(
+            start,
+            end,
+            this.offsetTranslations[this.offset],
+            s,
+          );
+          s.from = convertedValues.from;
+          s.coordinates = convertedValues.coordinates;
+          return s;
+        });
+
+        // wait for all the conversions to be done
+        Promise.all(convertedStrokes).then((data) => {
+          resolve(data);
+        });
+
       });
     },
 
-    convertPoints(baseSize, currentSize, { from, coordinates }) {
+    convertPoints(baseSize, currentSize, xyOffset, { from, coordinates }) {
       return new Promise((resolve, reject) => {
         const webWorker = new Worker("/workers/transform_coordinates.js");
 
@@ -287,6 +382,10 @@ export default {
           baseSize: baseSize,
           currentSize: currentSize,
           xyCoordinates: JSON.parse(JSON.stringify(from)),
+          xyOffset: {
+            x: xyOffset[0] * -1,
+            y: xyOffset[1] * -1,
+          }
         });
 
         // convert the coordinates
@@ -295,6 +394,10 @@ export default {
           baseSize: baseSize,
           currentSize: currentSize,
           xyCoordinates: JSON.parse(JSON.stringify(coordinates)),
+          xyOffset: {
+            x: xyOffset[0] * -1,
+            y: xyOffset[1] * -1,
+          }
         });
 
         webWorker.onmessage = ({ data }) => {
@@ -316,9 +419,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.drawing-buttons {
-  min-width: 600px;
-}
-</style>

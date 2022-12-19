@@ -16,7 +16,10 @@ import {
   faCircleCheck,
   faRightFromBracket,
   faCheckToSlot,
+  faArrowRight,
+  faMinus,
   faX,
+  faPlay,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faUser);
@@ -34,5 +37,8 @@ library.add(faCircleCheck);
 library.add(faRightFromBracket);
 library.add(faX);
 library.add(faCheckToSlot);
+library.add(faArrowRight);
+library.add(faMinus);
+library.add(faPlay);
 
 export default FontAwesomeIcon;

@@ -5,6 +5,7 @@ export default {
 
   state: () => ({
     code: null,
+    nextCode: null,
     playerId: null,
     players: [],
     swatches: [],
@@ -43,6 +44,10 @@ export default {
   mutations: {
     updateGameCode(state, code) {
       state.code = code;
+    },
+
+    updateNextGameCode(state, code) {
+      state.nextCode = code;
     },
 
     updatePlayer(state, player) {
@@ -92,6 +97,7 @@ export default {
   actions: {
     "SOCKET_success:lobby_joined"({ commit }, { gameLobby, playerId }) {
       commit("updateGameCode", gameLobby.room);
+      commit("updateNextGameCode", null);
       commit("setPlayers", gameLobby.players);
       commit("updateSwatches", gameLobby.colors);
       commit("setPlayerId", playerId);
@@ -135,8 +141,9 @@ export default {
       commit("setPlayerVotes", votes);
     },
 
-    updateGameCode({ commit }, code) {
-      commit("updateGameCode", code);
+    "SOCKET_success:lobby_next"({ commit }, gameCode) {
+      commit("updateNextGameCode", gameCode);
     },
+
   },
 };

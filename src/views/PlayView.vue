@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-base-200 pt-10">
-    <count-down :start="startTurn" v-if="isTurn" @done="isTimeUp = true" />
+    <count-down v-if="timeLimit && isTurn" :start="startTurn" @done="isTimeUp = true" />
     <modal :show="showTurnNotification">
       <template v-slot:title> It's your turn! </template>
       <template v-slot:body>
@@ -117,12 +117,14 @@ export default {
   },
 
   computed: {
+
     ...mapState({
       playerId: (state) => state.lobby.playerId,
       playerTurn: (state) => state.game.playerTurn,
       inProgress: (state) => state.game.inProgress,
       round: (state) => state.game.round,
       maxRounds: (state) => state.game.maxRounds,
+      timeLimit: (state) => state.game.timeLimit,
     }),
 
     ...mapGetters({

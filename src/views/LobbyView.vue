@@ -37,7 +37,7 @@
             </div>
             <player-list showReady />
             <button
-              class="btn btn-info btn-outline text-center rounded-2xl m-5 gap-2"
+              class="btn btn-info btn-outline text-center text-lg rounded-2xl m-5 mt-8 mb-3 gap-2"
               @click="showExitConfirmation = true"
             >
               Leave Game Lobby
@@ -46,13 +46,14 @@
             <button
               v-if="isLeader"
               :class="[
-                'btn btn-success text-center mx-5 my-3 rounded-2xl',
+                'btn btn-success text-center mx-5 my-3 rounded-2xl text-lg gap-2',
                 players.length >= this.minPlayers && 'animate-pulse',
               ]"
               :disabled="players.length < this.minPlayers"
               @click="startGame()"
             >
               <span>Start Game</span>
+              <font-awesome-icon icon="fa-play" />
             </button>
           </card>
         </div>

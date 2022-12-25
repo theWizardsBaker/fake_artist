@@ -25,9 +25,9 @@
         <label class="label justify-center">
           <span class="label-text gap-3">
             Touch Offset
-            <div class="tooltip" data-tip="Moves brush away from origin. Makes drawing on mobile easier">
+<!--             <div class="tooltip" data-tip="Moves brush away from origin. Makes drawing on mobile easier">
               <font-awesome-icon icon="circle-info" />
-            </div>
+            </div> -->
           </span>
         </label>
         <div class="btn-group rounded-2xl">

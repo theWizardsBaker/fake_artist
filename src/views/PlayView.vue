@@ -15,7 +15,7 @@
     <div class="flex justify-center pt-5">
       <game-topic />
     </div>
-    <div class="flex justify-center">
+    <div class="flex justify-center mb-10">
       <div class="flex flex-col lg:flex-row items-start">
         <div
           class="flex-initial hidden md:block place-self-center lg:place-self-start lg:pt-5 text-center"
@@ -60,7 +60,7 @@
       </div>
     </div>
     <!-- Bottom buttons on mobile devices -->
-    <div class="btm-nav btm-nav-sm md:hidden">
+    <div class="btm-nav btm-nav-xs md:hidden">
       <button
         v-for="(display, displayInd) in displays"
         :class="[selectedDisplay === displayInd && 'active']"

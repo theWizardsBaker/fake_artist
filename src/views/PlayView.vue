@@ -172,7 +172,7 @@ export default {
       selectedDisplay: 0,
       displays: ["fa-paintbrush", "fa-users"],
       width: document.documentElement.clientWidth,
-      canvasSize: "400",
+      canvasSize: 400,
       showTurnNotification: false,
       startTurn: false,
       isTimeUp: false,
@@ -194,7 +194,7 @@ export default {
         this.$refs.canvas
       ).width;
       const digitRegex = /\d+/;
-      this.canvasSize = digitRegex.exec(containerWidthStr)[0];
+      this.canvasSize = parseInt(digitRegex.exec(containerWidthStr)[0]);
     },
 
     async getTurn() {

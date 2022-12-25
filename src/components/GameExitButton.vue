@@ -21,6 +21,7 @@
     </modal>
     <button
       class="btn btn-info btn-outline text-center rounded-2xl m-5 gap-2"
+      :class="btnClass"
       :disabled="disabled"
       @click="showExitConfirmation = true"
     >
@@ -40,6 +41,7 @@ export default {
   props: {
     loading: Boolean,
     disabled: Boolean,
+    btnClass: String
   },
 
   watch: {

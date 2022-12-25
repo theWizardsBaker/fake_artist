@@ -8,6 +8,7 @@
         @submit="submitDrawing"
         @undo="undoDrawing"
         @brushSize="brushSize"
+        @offsetPosition="offsetPosition"
         class="drawing-button"
       />
       <div class="flex justify-center items-center">
@@ -17,7 +18,7 @@
         >
           LOADING
         </button>
-        <vue-drawing-canvas
+        <vue-canvas
           v-else
           ref="VueCanvasDrawing"
           :height="htmlCanvasSize"
@@ -27,6 +28,7 @@
           :color="color"
           :key="paths.length"
           :initialImage="filteredPaths"
+          :drawingOffset="drawingOffset"
           lineCap="round"
           lineJoin="round"
           @mouseup="setMark"
@@ -40,12 +42,14 @@
 <script>
 import DrawingCanvasButtons from "./DrawingCanvasButtons.vue";
 import { debounce } from "debounce";
-import VueDrawingCanvas from "vue-drawing-canvas";
+// import VueDrawingCanvas from "vue-drawing-canvas";
+import VueCanvas from "@/components/ui/Canvas.vue";
 import { mapState } from "vuex";
 
 export default {
   components: {
-    VueDrawingCanvas,
+    // VueDrawingCanvas,
+    VueCanvas,
     DrawingCanvasButtons,
   },
 
@@ -61,8 +65,8 @@ export default {
     },
 
     canvasSize: {
-      type: String,
-      default: "25",
+      type: Number,
+      default: 25,
     },
 
     isTurn: {
@@ -118,6 +122,10 @@ export default {
         return true;
       });
     },
+
+    drawingOffset() {
+      return this.offsetTranslations[this.offset];
+    }
   },
 
   watch: {
@@ -155,6 +163,7 @@ export default {
         this.submitDrawing();
       }
     },
+
   },
 
   data() {
@@ -168,6 +177,12 @@ export default {
       paths: [],
       lineWidth: 0,
       isLoadingDrawing: true,
+      offset: 'none',
+      offsetTranslations: {
+        left: [-25, -25],
+        right: [25, -25],
+        none: [0, 0]
+      }
     };
   },
 
@@ -200,6 +215,10 @@ export default {
 
     brushSize(size) {
       this.lineWidth = size;
+    },
+
+    offsetPosition(offset) {
+      this.offset = offset;
     },
 
     undoDrawing() {
@@ -255,20 +274,26 @@ export default {
       const end = enlarge ? this.htmlCanvasSize : this.canvasSizes[0];
 
       return new Promise((resolve, reject) => {
-        if (this.htmlCanvasSize !== this.canvasSizes[0]) {
-          const convertedStrokes = strokes.map(async (s) => {
-            const convertedValues = await this.convertPoints(start, end, s);
-            s.from = convertedValues.from;
-            s.coordinates = convertedValues.coordinates;
-            return s;
-          });
-          // wait for all the conversions to be done
-          Promise.all(convertedStrokes).then((data) => {
-            resolve(data);
-          });
-        } else {
+        if (this.htmlCanvasSize === this.canvasSizes[0]) {
           resolve(strokes);
         }
+
+        const convertedStrokes = strokes.map(async (s) => {
+          const convertedValues = await this.convertPoints(
+            start,
+            end,
+            s,
+          );
+          s.from = convertedValues.from;
+          s.coordinates = convertedValues.coordinates;
+          return s;
+        });
+
+        // wait for all the conversions to be done
+        Promise.all(convertedStrokes).then((data) => {
+          resolve(data);
+        });
+
       });
     },
 
@@ -316,9 +341,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.drawing-buttons {
-  min-width: 600px;
-}
-</style>

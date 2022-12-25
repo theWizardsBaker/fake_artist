@@ -43,10 +43,6 @@ export default {
       type: String,
       default: () => ''
     },
-    eraser: {
-      type: Boolean,
-      default: () => false
-    },
     color: {
       type: String,
       default: () => '#000000'
@@ -93,6 +89,10 @@ export default {
     },
     outputHeight: {
       type: Number
+    },
+    drawingOffset: {
+      type: Array,
+      default: () => [ 0, 0 ]
     }
   },
 
@@ -117,13 +117,11 @@ export default {
       context: null,
       images: [],
       strokes: {
-        type: '',
+        type: 'dash',
         from: { x: 0, y: 0 },
         coordinates: [],
         color: '',
         width: '',
-        lineCap: 'round',
-        lineJoin: 'round'
       },
       guides: [],
     };
@@ -139,7 +137,19 @@ export default {
       let canvas = this.getCanvas();
       this.context = this.context ? this.context : canvas.getContext('2d');
       
-      // await this.setBackground();
+      await this.setBackground();
+    },
+
+    async setBackground() {
+      this.clear();
+      this.context.fillStyle = this.backgroundColor;
+      this.context.fillRect(0, 0, Number(this.width), Number(this.height))
+
+      await this.$nextTick(async () => {
+        await this.drawBackgroundImage()
+      })
+
+      this.save();
     },
 
     drawInitialImage() {
@@ -152,11 +162,28 @@ export default {
     drawAdditionalImages() {
       if (this.additionalImages && this.additionalImages.length > 0) {
         let canvas = this.getCanvas();
-        this.additionalImages.forEach((watermarkObject) => {
-          this.drawWatermark(canvas, this.context, watermarkObject)
-        });
       }
     },
+
+    async drawBackgroundImage() {
+      if (!this.loadedImage) {
+        return new Promise((resolve) => { 
+          if (!this.backgroundImage) {
+            resolve()
+            return;
+          }
+          const image = new Image();
+          image.src = this.backgroundImage;
+          image.onload = () => {
+            this.context.drawImage(image, 0, 0, Number(this.width), Number(this.height));
+            this.loadedImage = image
+            resolve();
+          }
+        })
+      } else {
+        this.context.drawImage(this.loadedImage, 0, 0, Number(this.width), Number(this.height));
+      }
+    }, 
 
     clear() {
       this.context.clearRect(0, 0, Number(this.width), Number(this.height));
@@ -174,8 +201,8 @@ export default {
         y = event.offsetY;
       }
       return {
-        x: x,
-        y: y
+        x: x + this.drawingOffset[0],
+        y: y + this.drawingOffset[1]
       }
     },
 
@@ -184,12 +211,13 @@ export default {
         this.drawing = true;
         let coordinate = this.getCoordinates(event);
         this.strokes = {
-          type: this.eraser ? 'eraser' : 'line',
+          type: 'dash',
           from: coordinate,
           coordinates: [],
-          color: this.eraser ? this.backgroundColor : this.color,
+          color: this.color,
           width: this.lineWidth,
-          lineJoin: this.lineJoin
+          lineCap: 'round',
+          lineJoin: 'round'
         };
         this.guides = [];
       }
@@ -200,16 +228,8 @@ export default {
         if (!this.context) {
           this.setContext();
         }
-        let coordinate = this.getCoordinates(event);
-        if (this.eraser) {
-          this.strokes.coordinates.push(coordinate);
-          this.drawShape(this.context, this.strokes);
-        } else {
-          this.guides = [
-            { x: coordinate.x, y: coordinate.y }
-          ];
-          this.drawGuide(true);
-        }
+        this.strokes.coordinates.push(this.getCoordinates(event));
+        this.drawShape(this.context, this.strokes, false);
       }
     },
 
@@ -240,8 +260,8 @@ export default {
     drawShape(context, strokes, closingPath) {
       context.strokeStyle = strokes.color;
       context.lineWidth = strokes.width;
-      context.lineJoin = this.lineJoin;
-      context.lineCap = this.lineCap;
+      context.lineJoin = 'round';
+      context.lineCap = 'round';
       context.beginPath();
       context.setLineDash([]);
 
@@ -257,7 +277,7 @@ export default {
       if (this.drawing) {
         this.strokes.coordinates = this.guides.length > 0 ? this.guides : this.strokes.coordinates;
         this.images.push(this.strokes);
-        this.redraw(true);
+        // this.redraw(true);
         this.drawing = false;
       }
     },
@@ -266,7 +286,7 @@ export default {
       if (!this.lock) {
         this.images = [];
         this.strokes = {
-          type: '',
+          type: 'dash',
           coordinates: [],
           color: '',
           width: '',
@@ -286,21 +306,47 @@ export default {
     },
 
     async redraw(output) {
-      this.drawAdditionalImages()
-      let baseCanvas = document.createElement('canvas')
-      let baseCanvasContext = baseCanvas.getContext('2d')
-      baseCanvas.width = Number(this.width)
-      baseCanvas.height = Number(this.height)
-      
-      if (baseCanvasContext) {
-        this.images.forEach((stroke) => {
-          if (baseCanvasContext) {
-            baseCanvasContext.globalCompositeOperation = stroke.type === 'eraser' ? 'destination-out' : 'source-over'
-            this.drawShape(baseCanvasContext, stroke)
-          }
-        })
-        this.context.drawImage(baseCanvas, 0, 0, Number(this.width), Number(this.height))
-      }
+      output = typeof output !== 'undefined' ? output : true;
+      await this.setBackground()
+      .then(() => {
+        this.drawAdditionalImages()
+      })
+      .then(() => {
+        let baseCanvas = document.createElement('canvas')
+        let baseCanvasContext = baseCanvas.getContext('2d')
+        baseCanvas.width = Number(this.width)
+        baseCanvas.height = Number(this.height)
+        
+        if (baseCanvasContext) {
+          this.images.forEach((stroke) => {
+            if (baseCanvasContext) {
+              baseCanvasContext.globalCompositeOperation = 'source-over'
+              this.drawShape(baseCanvasContext, stroke, false)
+            }
+          })
+          this.context.drawImage(baseCanvas, 0, 0, Number(this.width), Number(this.height))
+        }
+      })
+      .then(() => {
+        if (output) {
+          this.save();
+        }
+      });
+    },
+
+    save() {
+      let canvas = this.getCanvas();
+        let temp = document.createElement('canvas');
+        let tempCtx = temp.getContext('2d')
+        let tempWidth = this.outputWidth === undefined ? this.width : this.outputWidth
+        let tempHeight = this.outputHeight === undefined ? this.height : this.outputHeight
+        temp.width = Number(tempWidth)
+        temp.height = Number(tempHeight)
+        
+        if (tempCtx) {
+          tempCtx.drawImage(canvas, 0, 0, Number(tempWidth), Number(tempHeight));
+
+        }
     },
 
     isEmpty() {
@@ -312,4 +358,5 @@ export default {
     }
   },
 }
+
 </script>

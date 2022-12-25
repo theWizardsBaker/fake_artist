@@ -18,18 +18,16 @@
     </modal>
     <div class="flex justify-center content-center">
       <div class="flex flex-col md:flex-row items-start gap-5">
-        CODE: {{code}}
-        Next Code: {{nextCode}}
-        <div class="md:hidden mb-5">
+        <div class="md:hidden mb-5 place-self-center">
           <div
-            class="flex-auto mt-5 place-self-center"
+            class="flex-auto mt-5"
             ref="canvas"
-            :style="{ width: `${canvasSize}px`, height: `${canvasSize}px` }"
           >
             <drawing-canvas
               :enableDrawing="false"
-              :canvasSize="`${canvasSize}`"
+              :canvasSize="canvasSize"
               lockCanvas
+              v-if="canvasSize < 400"
             />
           </div>
           <div class="text-center p-2 rounded-md place-self-center">
@@ -102,12 +100,12 @@
           <div
             class=" mt-5 place-self-center"
             ref="canvas"
-            :style="{ width: `${canvasSize}px`, height: `${canvasSize}px` }"
           >
             <drawing-canvas
               :enableDrawing="false"
-              :canvasSize="`${canvasSize}`"
+              :canvasSize="canvasSize"
               lockCanvas
+              v-if="canvasSize === 400"
             />
           </div>
         </div>
@@ -140,14 +138,15 @@ export default {
   mounted() {
     this.$socket.emit("game:voted", this.player._id);
     if(this.isLeader){
-      alert("NEXT LOBBY")
       this.$socket.emit("lobby:next", this.code);
     }
     window.addEventListener("visibilitychange", this.checkVotes);
+    window.addEventListener("resize", this.getWindowDimensions);
   },
 
   unmounted() {
     window.removeEventListener("visibilitychange", this.checkVotes);
+    window.removeEventListener("resize", this.getWindowDimensions);
   },
 
   computed: {
@@ -159,7 +158,11 @@ export default {
     ...mapState({
       code: (state) => state.lobby.code,
       nextCode: (state) => state.lobby.nextCode,
-    })
+    }),
+
+    canvasSize() {
+      return this.width > 768 ? 400 : 251;
+    }
   },
 
   data() {
@@ -169,8 +172,8 @@ export default {
       voted: false,
       revealHiddenArtist: false,
       playerDirection: "Select the fake artist and click vote",
-      canvasSize: "400",
-      loading: false
+      loading: false,
+      width: document.documentElement.clientWidth
     };
   },
 
@@ -192,6 +195,11 @@ export default {
   },
 
   methods: {
+    
+    getWindowDimensions() {
+      this.width = document.documentElement.clientWidth;
+    },
+
     setSelection(player) {
       this.selection = player;
     },

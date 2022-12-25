@@ -179,8 +179,8 @@ export default {
       isLoadingDrawing: true,
       offset: 'none',
       offsetTranslations: {
-        left: [-45, -45],
-        right: [45, -45],
+        left: [-35, -35],
+        right: [35, -35],
         none: [0, 0]
       }
     };

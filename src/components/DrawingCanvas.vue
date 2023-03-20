@@ -129,6 +129,13 @@ export default {
   },
 
   watch: {
+    filteredPlayer(newVal, oldVal) {
+      if(newVal !== oldVal) {
+        this.isRedrawingCanvasSize = true;
+        this.resizeCanvas(this.canvasSize);
+      }
+    },
+
     canvasSize(newVal, oldVal) {
       if (newVal !== oldVal) {
         if (this.$refs.VueCanvasDrawing) {

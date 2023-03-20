@@ -103,6 +103,10 @@ export default {
       commit("setPlayerId", playerId);
     },
 
+    "SOCKET_success:game_started"({ commit },{ players }) {
+      commit("setPlayers", players);
+    },
+
     "SOCKET_success:lobby_quit"({ commit }) {
       commit("updateGameCode", null);
     },

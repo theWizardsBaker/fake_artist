@@ -41,8 +41,8 @@ export default {
     setTurn(state, turn) {
       state.playerTurn = turn;
     },
-    setPlayerCount(state, turns) {
-      state.playerCount = turns;
+    setPlayerCount(state, players) {
+      state.playerCount = players;
     },
     setTopic(state, topic) {
       state.topic = topic;
@@ -73,7 +73,7 @@ export default {
       { commit },
       { players, timeLimit, maxRounds }
     ) {
-      commit("setPlayerCount", players);
+      commit("setPlayerCount", players.length);
       commit("setTimeLimit", timeLimit);
       commit("setMaxRounds", maxRounds);
       commit("setTopic");
